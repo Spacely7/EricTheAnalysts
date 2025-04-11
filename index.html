@@ -6,60 +6,337 @@
   <title>ERIC KUMI | Data Analyst Portfolio</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --accent-color: #3b82f6;
+      --light-color: #f8fafc;
+      --dark-color: #1e293b;
+      --gray-color: #64748b;
+      --gray-light: #e2e8f0;
+      --success-color: #10b981;
+      --info-color: #06b6d4;
+      --warning-color: #f59e0b;
+    }
+    
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.7;
+      color: var(--dark-color);
+      background-color: #fff;
+      overflow-x: hidden;
     }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+    
+    .navbar {
+      padding: 15px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    
+    .nav-item {
+      padding: 0 10px;
+    }
+    
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    
     header {
-      background-color: #0d6efd;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 60px 0;
-      text-align: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+      margin-top: -96px;
+      padding-top: 176px;
     }
-    section {
-      padding: 60px 0;
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff10" fill-opacity="0.1" d="M0,128L48,149.3C96,171,192,213,288,218.7C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,170.7C1248,160,1344,96,1392,64L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
     }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
     .section-title {
-      margin-bottom: 40px;
-      font-weight: bold;
+      font-weight: 700;
+      margin-bottom: 50px;
+      position: relative;
+      display: inline-block;
     }
+    
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    section {
+      padding: 80px 0;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    
     .project-card {
-      transition: transform 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
+    
     .project-card:hover {
-      transform: scale(1.03);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     }
+    
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .tool-card img {
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .tool-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .progress {
+      height: 8px;
+      border-radius: 20px;
+      overflow: visible;
+      background-color: var(--gray-light);
+      margin-bottom: 30px;
+    }
+    
+    .progress-bar {
+      position: relative;
+      border-radius: 20px;
+      transition: width 1s ease;
+    }
+    
+    .progress-bar:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: white;
+      border: 3px solid;
+      border-color: inherit;
+    }
+    
+    .skill-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .contact-info {
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.05);
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .contact-info:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    
+    .contact-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .btn-custom {
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      color: white;
+    }
+    
+    .btn-outline-custom {
+      background: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-outline-custom:hover {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: var(--primary-color);
+      background-color: rgba(37, 99, 235, 0.1);
+      margin: 0 5px;
+      transition: all 0.3s ease;
+    }
+    
+    .social-icons a:hover {
+      color: white;
+      background-color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+    
     footer {
-      background-color: #f8f9fa;
-      text-align: center;
-      padding: 20px 0;
-      margin-top: 40px;
+      background-color: var(--dark-color);
+      color: white;
+      padding: 40px 0;
     }
-    .project-card:hover {
-  transform: scale(1.03);
-  transition: 0.3s ease-in-out;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-  .card:hover {
-transform: scale(1.05);
-transition: 0.3s ease-in-out;
-box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-
+    
+    .bg-gradient-light {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    }
+    
+    .about-img-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      margin: 0 auto;
+    }
+    
+    .about-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .about-img-container:hover .about-img {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .about-img-container:before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: -20px;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--primary-color);
+      border-radius: 20px;
+      z-index: -1;
+    }
+    
+    .animated-bg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="1" d="M0,64L48,80C96,96,192,128,288,138.7C384,149,480,139,576,117.3C672,96,768,64,864,74.7C960,85,1056,139,1152,149.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .tool-card {
+      padding: 2rem 1rem;
+      text-align: center;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .bg-section {
+      background-color: var(--light-color);
+      position: relative;
+    }
   </style>
 </head>
 <body>
 
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
-     <a class="navbar-brand d-flex align-items-center" href="#">
-  <img src="portfolio.PNG" alt="Logo" class="me-2" style="height: 45px; width: 45px; object-fit: contain;">
-  <span class="fs-4"></span>
-</a>
-
+      <a class="navbar-brand" href="#">
+        <img src="portfolio.PNG" alt="Logo" class="me-2" style="height: 40px; width: 40px; object-fit: contain;">
+        <span class="text-primary">ERIC KUMI</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -67,8 +344,8 @@ box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         <ul class="navbar-nav">
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#tools">Tools</a></li>
           <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tools">Tools</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -77,224 +354,364 @@ box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 
   <!-- Header -->
   <header>
-    <div class="container">
-      <h1>ERIC KUMI</h1>
-      <p class="lead">Data Analyst | Data Storyteller | Business Insights</p>
+    <div class="container hero-content text-center">
+      <h1 class="display-4 fw-bold mb-3">ERIC KUMI</h1>
+      <p class="lead fs-3 mb-5">Data Analyst | Data Storyteller | Business Insights</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="#projects" class="btn btn-custom">View My Projects</a>
+        <a href="#contact" class="btn btn-custom btn-outline-custom">Get In Touch</a>
+      </div>
     </div>
+    <div class="animated-bg"></div>
   </header>
 
   <!-- About Section -->
-<section id="about" class="py-5">
-  <div class="container">
-    <h2 class="section-title text-center mb-4">About Me</h2>
-    <div class="row align-items-center">
-      <!-- Image Column -->
-      <div class="col-md-4 text-center mb-4 mb-md-0">
-        <img src="eric.jpg" alt="My Photo" class="img-fluid rounded-circle shadow" style="width: 200px; height: 200px; object-fit: cover;">
+  <section id="about" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="section-title">About Me</h2>
+        </div>
       </div>
-      
-      <!-- Text Column -->
-      <div class="col-md-8">
-        <p>Hello! I'm a passionate Data Analyst skilled in turning complex data into actionable insights. I specialize in Python, SQL, Power BI, and Excel. With a keen eye for detail and a drive to solve real-world problems, I help organizations make data-driven decisions.</p>
-        <p>I’ve worked on projects ranging from interactive dashboards to machine learning models and business reporting solutions. I’m always excited to explore new data and tell compelling stories with it!</p>
+      <div class="row align-items-center">
+        <!-- Image Column -->
+        <div class="col-lg-4 mb-5 mb-lg-0">
+          <div class="about-img-container">
+            <img src="eric.jpg" alt="My Photo" class="about-img">
+          </div>
+        </div>
+        
+        <!-- Text Column -->
+        <div class="col-lg-8">
+          <div class="ps-lg-4">
+            <h3 class="mb-4">Transforming Data into Strategic Insights</h3>
+            <p class="mb-4">Hello! I'm a passionate Data Analyst with expertise in transforming complex datasets into actionable business insights. With a strong foundation in Python, SQL, Power BI, and Excel, I help organizations make data-driven decisions that drive growth and efficiency.</p>
+            <p class="mb-4">My analytical approach combines technical expertise with creative problem-solving. I've successfully delivered projects ranging from interactive dashboards and predictive models to comprehensive business intelligence solutions that tell compelling stories with data.</p>
+            <div class="row g-4 mt-2">
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-chart-line me-3 text-primary fs-4"></i>
+                  <div>
+                    <h5 class="mb-1">Data Analysis</h5>
+                    <p class="mb-0 text-muted">Uncovering patterns and trends</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-laptop-code me-3 text-primary fs-4"></i>
+                  <div>
+                    <h5 class="mb-1">Data Visualization</h5>
+                    <p class="mb-0 text-muted">Creating intuitive dashboards</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-brain me-3 text-primary fs-4"></i>
+                  <div>
+                    <h5 class="mb-1">Predictive Analytics</h5>
+                    <p class="mb-0 text-muted">Building forecasting models</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-lightbulb me-3 text-primary fs-4"></i>
+                  <div>
+                    <h5 class="mb-1">Business Intelligence</h5>
+                    <p class="mb-0 text-muted">Converting data to strategy</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- Projects Section -->
-<section id="projects" class="bg-light">
-  <div class="container">
-    <h2 class="section-title text-center">Featured Projects</h2>
-    <div class="row">
-      <!-- Project 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="card shadow-sm project-card h-100">
-          <img src="forecast.PNG" class="card-img-top" alt="Sales Dashboard Screenshot">
-          <div class="card-body">
-            <h5 class="card-title">Sales Dashboard</h5>
-            <p class="card-text">Power BI dashboard showing sales KPIs, trends, and customer insights.</p>
-            <a href="project-sales-dashboard.html" class="btn btn-outline-primary btn-sm">View Project</a>
-          </div>
+  <section id="projects" class="bg-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="text-muted mb-5">Explore my portfolio of data analysis and visualization projects</p>
         </div>
       </div>
-
-      <!-- Project 2 -->
-      <div class="col-md-4 mb-4">
-        <div class="card shadow-sm project-card h-100">
-          <img src="demandAverage.PNG" class="card-img-top" alt="Customer Segmentation Screenshot">
-          <div class="card-body">
-            <h5 class="card-title">Customer Segmentation</h5>
-            <p class="card-text">Clustered customers using machine learning to target marketing strategies.</p>
-            <a href="project-customer-segmentation.html" class="btn btn-outline-primary btn-sm">View Project</a>
+      <div class="row">
+        <!-- Project 1 -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm project-card h-100">
+            <img src="forecast.PNG" class="card-img-top" alt="Sales Dashboard Screenshot">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3">
+                <span class="badge bg-primary">Power BI</span>
+                <span class="badge bg-secondary">Data Visualization</span>
+              </div>
+              <h5 class="card-title">Sales Performance Dashboard</h5>
+              <p class="card-text text-muted">Interactive Power BI dashboard showcasing key sales KPIs, regional performance analysis, and customer buying patterns to optimize sales strategies.</p>
+            </div>
+            <div class="card-footer bg-white border-0 pt-0">
+              <a href="project-sales-dashboard.html" class="btn btn-outline-primary w-100">View Case Study</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Project 3 -->
-      <div class="col-md-4 mb-4">
-        <div class="card shadow-sm project-card h-100">
-          <img src="cementdemand.PNG" class="card-img-top" alt="Churn Prediction Screenshot">
-          <div class="card-body">
-            <h5 class="card-title">Churn Prediction</h5>
-            <p class="card-text">Used Python models to predict churn and reduce customer loss.</p>
-            <a href="project-churn-prediction.html" class="btn btn-outline-primary btn-sm">View Project</a>
+        <!-- Project 2 -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm project-card h-100">
+            <img src="demandAverage.PNG" class="card-img-top" alt="Customer Segmentation Screenshot">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3">
+                <span class="badge bg-success">Python</span>
+                <span class="badge bg-secondary">Machine Learning</span>
+              </div>
+              <h5 class="card-title">Customer Segmentation Analysis</h5>
+              <p class="card-text text-muted">Applied k-means clustering and RFM analysis to segment customers based on behavior patterns, resulting in targeted marketing strategies that increased conversion by 23%.</p>
+            </div>
+            <div class="card-footer bg-white border-0 pt-0">
+              <a href="project-customer-segmentation.html" class="btn btn-outline-primary w-100">View Case Study</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm project-card h-100">
+            <img src="cementdemand.PNG" class="card-img-top" alt="Churn Prediction Screenshot">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3">
+                <span class="badge bg-info">Machine Learning</span>
+                <span class="badge bg-secondary">Predictive Analytics</span>
+              </div>
+              <h5 class="card-title">Customer Churn Prediction</h5>
+              <p class="card-text text-muted">Developed and deployed machine learning models using Random Forest and XGBoost to identify at-risk customers, enabling proactive retention strategies that reduced churn by 18%.</p>
+            </div>
+            <div class="card-footer bg-white border-0 pt-0">
+              <a href="project-churn-prediction.html" class="btn btn-outline-primary w-100">View Case Study</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- Skills Section -->
-<section id="skills">
-  <div class="container">
-    <h2 class="section-title text-center">My Skills</h2>
+  <section id="skills" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="section-title">Skills & Expertise</h2>
+          <p class="text-muted mb-5">Technical and analytical capabilities I bring to every project</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <!-- Python -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>Python</span>
+              <span>90%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 90%;"></div>
+            </div>
+          </div>
 
-    <!-- Python -->
-    <div class="mb-3">
-      <label>Python</label>
-      <div class="progress">
-        <div class="progress-bar bg-success" role="progressbar" style="width: 90%;">90%</div>
+          <!-- SQL -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>SQL</span>
+              <span>85%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-info" role="progressbar" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Power BI -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>Power BI / Tableau</span>
+              <span>80%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-6">
+          <!-- Excel -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>Excel</span>
+              <span>75%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;"></div>
+            </div>
+          </div>
+
+          <!-- Data Cleaning -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>Data Cleaning & Preparation</span>
+              <span>85%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-secondary" role="progressbar" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Communication -->
+          <div class="mb-4">
+            <div class="skill-label">
+              <span>Data Storytelling & Communication</span>
+              <span>80%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 80%;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- SQL -->
-    <div class="mb-3">
-      <label>SQL</label>
-      <div class="progress">
-        <div class="progress-bar bg-info" role="progressbar" style="width: 85%;">85%</div>
-      </div>
-    </div>
-
-    <!-- Power BI -->
-    <div class="mb-3">
-      <label>Power BI / Tableau</label>
-      <div class="progress">
-        <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: 80%;">80%</div>
-      </div>
-    </div>
-
-    <!-- Excel -->
-    <div class="mb-3">
-      <label>Excel</label>
-      <div class="progress">
-        <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;">75%</div>
-      </div>
-    </div>
-
-    <!-- Data Cleaning -->
-    <div class="mb-3">
-      <label>Data Cleaning</label>
-      <div class="progress">
-        <div class="progress-bar bg-secondary" role="progressbar" style="width: 85%;">85%</div>
-      </div>
-    </div>
-
-    <!-- Communication -->
-    <div class="mb-3">
-      <label>Storytelling & Communication</label>
-      <div class="progress">
-        <div class="progress-bar bg-danger" role="progressbar" style="width: 80%;">80%</div>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
   <!-- Tools Section -->
-<section id="tools" class="bg-light py-5">
-  <div class="container">
-    <h2 class="section-title text-center">My Tools</h2>
-    <div class="row">
-      <!-- Tool 1: Python -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="python.jpeg" class="card-img-top" alt="Python Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">Python</h5>
-            <p class="card-text">Used for data analysis, machine learning, and automation.</p>
-          </div>
+  <section id="tools" class="bg-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="section-title">Tools & Technologies</h2>
+          <p class="text-muted mb-5">The arsenal of tools I use to unlock insights from data</p>
         </div>
       </div>
-
-      <!-- Tool 2: SQL -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="sql.png" class="card-img-top" alt="SQL Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">SQL</h5>
-            <p class="card-text">Expert in querying databases and performing data manipulation.</p>
+      <div class="row">
+        <!-- Tool 1: Python -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="python.jpeg" alt="Python Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">Python</h5>
+            <p class="text-muted mb-0">Data analysis, machine learning, automation, and statistical modeling</p>
           </div>
         </div>
-      </div>
 
-      <!-- Tool 3: Power BI -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="power bi.png" class="card-img-top" alt="Power BI Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">Power BI</h5>
-            <p class="card-text">Built dynamic reports and dashboards to present actionable insights.</p>
+        <!-- Tool 2: SQL -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="sql.png" alt="SQL Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">SQL</h5>
+            <p class="text-muted mb-0">Complex queries, data manipulation, and database management</p>
           </div>
         </div>
-      </div>
 
-      <!-- Tool 4: Excel -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="excel.jpeg" class="card-img-top" alt="Excel Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">Excel</h5>
-            <p class="card-text">Advanced data analysis and visualization with Excel functions.</p>
+        <!-- Tool 3: Power BI -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="power bi.png" alt="Power BI Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">Power BI</h5>
+            <p class="text-muted mb-0">Interactive dashboards, reports, and business intelligence solutions</p>
           </div>
         </div>
-      </div>
 
-      <!-- Tool 5: Tableau -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="tableau.png" class="card-img-top" alt="Tableau Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">Tableau</h5>
-            <p class="card-text">Created interactive dashboards for visualizing business data.</p>
+        <!-- Tool 4: Excel -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="excel.jpeg" alt="Excel Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">Excel</h5>
+            <p class="text-muted mb-0">Advanced functions, data modeling, pivot tables, and VBA</p>
           </div>
         </div>
-      </div>
 
-      <!-- Tool 6: Machine Learning -->
-      <div class="col-md-4 mb-4">
-        <div class="card text-center shadow-sm">
-          <img src="machineLearning.png" class="card-img-top" alt="Machine Learning Logo" style="height: 100px; object-fit: contain;">
-          <div class="card-body">
-            <h5 class="card-title">Machine Learning</h5>
-            <p class="card-text">Applied ML algorithms for predictive analysis and model building.</p>
+        <!-- Tool 5: Tableau -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="tableau.png" alt="Tableau Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">Tableau</h5>
+            <p class="text-muted mb-0">Data visualization, storytelling, and interactive dashboards</p>
+          </div>
+        </div>
+
+        <!-- Tool 6: Machine Learning -->
+        <div class="col-md-4 col-lg-4 mb-4">
+          <div class="tool-card">
+            <img src="machineLearning.png" alt="Machine Learning Logo" class="img-fluid" style="height: 80px; object-fit: contain;">
+            <h5 class="mt-4">Machine Learning</h5>
+            <p class="text-muted mb-0">Predictive modeling, classification, clustering, and regression analysis</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- Contact Section -->
-  <section id="contact" class="bg-light">
+  <section id="contact" class="py-5">
     <div class="container">
-      <h2 class="section-title text-center">Contact Me</h2>
-      <p class="text-center">I'd love to connect! Reach out via email or LinkedIn.</p>
-      <div class="text-center">
-        <a href="mailto:erbeasku@gmail.com" class="btn btn-primary me-2">Email Me</a>
-        <a href="https://www.linkedin.com/in/eric-kumi-0359922a1?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" class="btn btn-primary me-2">LinkedIn</a>
-        <a href="https://www.tiktok.com/@erictheanalyst?_t=ZM-8vBJXU42fQN&_r=1" class="btn btn-primary me-2">TikTok</a>
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="section-title">Let's Connect</h2>
+          <p class="text-muted mb-5">Interested in working together? I'd love to hear from you.</p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+          <div class="contact-info text-center">
+            <div class="contact-icon mx-auto">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h5>Email</h5>
+            <p class="mb-0">erbeasku@gmail.com</p>
+            <a href="mailto:erbeasku@gmail.com" class="btn btn-custom mt-3">Send Email</a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="contact-info text-center">
+            <div class="contact-icon mx-auto">
+              <i class="fab fa-linkedin"></i>
+            </div>
+            <h5>LinkedIn</h5>
+            <p class="mb-0">Let's connect professionally</p>
+            <a href="https://www.linkedin.com/in/eric-kumi-0359922a1" class="btn btn-custom mt-3">Connect</a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="contact-info text-center">
+            <div class="contact-icon mx-auto">
+              <i class="fab fa-tiktok"></i>
+            </div>
+            <h5>TikTok</h5>
+            <p class="mb-0">Follow my data journey</p>
+            <a href="https://www.tiktok.com/@erictheanalyst" class="btn btn-custom mt-3">Follow</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2025 ERIC KUMI. All rights reserved.</p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h4 class="mb-3">ERIC KUMI</h4>
+          <p class="mb-0">Data Analyst | Data Storyteller | Business Insights</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end mt-4 mt-md-0">
+          <div class="social-icons">
+            <a href="mailto:erbeasku@gmail.com"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.linkedin.com/in/eric-kumi-0359922a1"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.tiktok.com/@erictheanalyst"><i class="fab fa-tiktok"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+          </div>
+          <p class="mt-3 mb-0">© 2025 Eric Kumi. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.
