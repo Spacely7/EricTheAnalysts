@@ -350,9 +350,16 @@ body.loaded #preloader {
   opacity: 0;
   visibility: hidden;
 }
+  html {
+    scroll-behavior: smooth;
+  }
+
   </style>
+  
 </head>
 <body>
+  <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="70" tabindex="0">
+
   <!-- Preloader -->
   <div id="preloader">
     <div class="preloader-content">
