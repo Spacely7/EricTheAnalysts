@@ -41,7 +41,7 @@ All code is contained in a **single HTML file** to keep things simple and beginn
 
 I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
-- **LinkedIn: linkedin.com/in/eric-kumi-0359922a1**
+- **LinkedIn: Eric Kumi**
 - **Email: erbeasku@gmail.com**
 - **TikTok: @EricTheAnalyst**
 
