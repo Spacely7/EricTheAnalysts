@@ -1,23 +1,59 @@
-# EricTheAnalyst - Data Analytics Portfolio
-Welcome to my data analytics portfolio! I'm Eric, a passionate data analyst with expertise in transforming complex data into actionable insights.
-About Me
-As EricTheAnalyst, I specialize in data visualization, statistical analysis, and building predictive models that help organizations make data-driven decisions. My technical toolkit includes Python, SQL, Tableau, and machine learning techniques that I leverage to uncover meaningful patterns in data.
-# What You'll Find Here
-This repository showcases my projects, demonstrating my analytical approach and technical skills. Each project includes detailed documentation, code samples, and visualizations that highlight my ability to extract value from data.
-Projects
-# Browse through my portfolio to see examples of:
+# EricTheAnalyst | Data Analyst Portfolio Website
 
-Exploratory data analysis
-Predictive modeling
-Interactive dashboards
-Business intelligence solutions
-Statistical analysis
+Welcome to the official portfolio website of **Eric Kumi**, also known as **EricTheAnalyst** — a passionate data analyst focused on transforming data into actionable insights. This website showcases my work, projects, skills, and professional journey in the world of data analytics.
 
-# Connect With Me
+## 🔍 About This Portfolio
+
+This site was built to serve as a personal brand hub, allowing visitors to:
+- Explore my featured data projects
+- View my technical and analytical skills
+- Contact me directly
+- Download my resume
+- Learn more about my professional background
+
+The website includes an animated preloader, smooth scrolling, responsive design, and modern UI — all built using HTML, CSS, and **Bootstrap**.
+
+## 🚀 Technologies Used
+
+- **HTML5**
+- **CSS3**
+- **Bootstrap 5**
+- **JavaScript (for animations and loading effects)**
+
+## 📁 Project Structure
+
+All code is contained in a **single HTML file** to keep things simple and beginner-friendly.
+
+
+## 📸 Live Preview
+
+🔗 [View Live Website](https://spacely7.github.io/EricTheAnalysts)
+
+## 🧠 What You'll Find
+
+- ✅ **Interactive landing animation**
+- ✅ **Professional About section**
+- ✅ **Featured Data Projects**
+- ✅ **Contact and social links**
+- ✅ **Responsive design for mobile and desktop**
+
+## 📌 How to Use
+
+Feel free to fork this project and customize it for your own portfolio.
+
+To run locally:
+1. Clone the repo:  
+   `git clone https://github.com/your-username/erictheanalyst-portfolio.git`
+2. Open `index.html` in your browser.
+
+## 📫 Contact Me
+
 I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
-LinkedIn: Eric Kumi
-Email: erbeasku@gmail.com
+LinkedIn: Eric kumi
+Email: erbeasku@gmail.com.com
 TikTok: @EricTheAnalyst
 
-Thank you for visiting my portfolio!
+**Eric Kumi**  
+*Data Analyst | Storyteller | Problem Solver*  
+Brand: **EricTheAnalyst**
