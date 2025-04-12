@@ -51,7 +51,7 @@ To run locally:
 I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
 LinkedIn: Eric kumi
-Email: erbeasku@gmail.com.com
+Email: erbeasku@gmail.com
 TikTok: @EricTheAnalyst
 
 **Eric Kumi**  
