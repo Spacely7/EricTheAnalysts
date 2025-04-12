@@ -1,44 +1,23 @@
-# Project Title: Cement Demand Forecasting Dashboard
-# Overview
-This project is a data analytics and machine learning solution for forecasting cement demand over time. Built using Streamlit, the dashboard offers an interactive web interface for visualizing past trends, exploring key metrics, and predicting future demand. The insights provided can help manufacturers, distributors, and planners in the construction industry make data-driven decisions regarding production and sales.
+# EricTheAnalyst - Data Analytics Portfolio
+Welcome to my data analytics portfolio! I'm Eric, a passionate data analyst with expertise in transforming complex data into actionable insights.
+About Me
+As EricTheAnalyst, I specialize in data visualization, statistical analysis, and building predictive models that help organizations make data-driven decisions. My technical toolkit includes Python, SQL, Tableau, and machine learning techniques that I leverage to uncover meaningful patterns in data.
+# What You'll Find Here
+This repository showcases my projects, demonstrating my analytical approach and technical skills. Each project includes detailed documentation, code samples, and visualizations that highlight my ability to extract value from data.
+Projects
+# Browse through my portfolio to see examples of:
 
-# Key Features
-Interactive Dashboard UI: Built using Streamlit, offering easy navigation between dashboard and prediction views.
+Exploratory data analysis
+Predictive modeling
+Interactive dashboards
+Business intelligence solutions
+Statistical analysis
 
-# Descriptive Analytics:
+# Connect With Me
+I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
-Average, peak, and median demand statistics.
+LinkedIn: Eric Kumi
+Email: erbeasku@gmail.com
+TikTok: @EricTheAnalyst
 
-Total production and average sales metrics.
-
-Best and worst performing months in terms of demand.
-
-# Visual Insights:
-
-Line plots comparing Demand, Production, and Sales over time.
-
-Forecasted demand vs historical trends with an intuitive visual interface.
-
-# Forecasting:
-
-Uses machine learning models (e.g., XGBoost or Scikit-learn regressors) to predict future cement demand.
-
-Forecast plot shows projected demand for upcoming months alongside historical data.
-
-# Technologies Used
-Frontend & Visualization: Streamlit, Plotly, Matplotlib, Seaborn
-
-Backend & Data Processing: Pandas, NumPy, Scikit-learn, XGBoost
-
-Forecasting Model: Time series regression using XGBoost
-
-Data Source: Uploaded CSV file containing historical cement demand, production, and sales data.
-
-# Business Value
-This solution enables proactive decision-making for supply chain and operations teams in the construction industry. By forecasting demand with accuracy, businesses can:
-
-Optimize production schedules.
-
-Minimize surplus and shortages.
-
-Increase responsiveness to market trends.
+Thank you for visiting my portfolio!
