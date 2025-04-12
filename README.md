@@ -50,9 +50,9 @@ To run locally:
 
 I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
-**LinkedIn: Eric kumi**
-**Email: erbeasku@gmail.com**
-**TikTok: @EricTheAnalyst**
+- **LinkedIn: Eric kumi**
+- **Email: erbeasku@gmail.com**
+- **TikTok: @EricTheAnalyst**
 
 **Eric Kumi**  
 *Data Analyst | Storyteller | Problem Solver*  
