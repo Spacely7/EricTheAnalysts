@@ -37,20 +37,11 @@ All code is contained in a **single HTML file** to keep things simple and beginn
 - ✅ **Contact and social links**
 - ✅ **Responsive design for mobile and desktop**
 
-## 📌 How to Use
-
-Feel free to fork this project and customize it for your own portfolio.
-
-To run locally:
-1. Clone the repo:  
-   `git clone https://github.com/your-username/erictheanalyst-portfolio.git`
-2. Open `index.html` in your browser.
-
 ## 📫 Contact Me
 
 I'm always interested in collaborating on challenging data problems or discussing opportunities. Feel free to reach out through:
 
-- **LinkedIn: Eric kumi**
+- **LinkedIn: linkedin.com/in/eric-kumi-0359922a1**
 - **Email: erbeasku@gmail.com**
 - **TikTok: @EricTheAnalyst**
 
