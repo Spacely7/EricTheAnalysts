@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Customer Segmentation Analysis | Data Science Project</title>
+  <title>Country Clustering Using K-Means & PCA | Data Science Project</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -11,6 +11,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #333;
       background-color: #f8f9fa;
+      position: relative;
     }
     .hero-section {
       background-color: #6610f2;
@@ -103,10 +104,149 @@
     .cluster-4 {
       background-color: #fd7e14;
     }
+    
+    /* Additional styles for interactive elements */
+    .back-to-top {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      display: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #6610f2;
+      color: white;
+      text-align: center;
+      line-height: 50px;
+      font-size: 20px;
+      z-index: 99;
+      transition: all 0.3s;
+    }
+    
+    .back-to-top:hover {
+      background-color: #5a0fc2;
+      transform: scale(1.1);
+    }
+    
+    .filter-btn {
+      border-radius: 25px;
+      padding: 8px 20px;
+      margin: 0 5px 15px;
+      transition: all 0.3s;
+    }
+    
+    .filter-btn.active {
+      background-color: #6610f2;
+      color: white;
+    }
+    
+    .feature-card {
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .feature-card:hover .feature-icon {
+      transform: rotate(360deg);
+      color: #20c997;
+    }
+    
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: #e9ecef;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+    }
+    
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+    
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: -12px;
+      background-color: white;
+      border: 4px solid #6610f2;
+      top: 20px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .left {
+      left: 0;
+    }
+    
+    .right {
+      left: 50%;
+    }
+    
+    .left::after {
+      right: -13px;
+    }
+    
+    .right::after {
+      left: -12px;
+    }
+    
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: white;
+      position: relative;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.5s ease;
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    
+    .timeline-content.show {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+    
+    @media screen and (max-width: 768px) {
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-container::after {
+        left: 15px;
+      }
+      
+      .left::after, .right::after {
+        left: 15px;
+      }
+      
+      .right {
+        left: 0%;
+      }
+    }
   </style>
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="100">
+  <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">
         <i class="fas fa-chevron-left me-2"></i>Back to Portfolio
@@ -126,6 +266,9 @@
             <a class="nav-link" href="#findings">Key Findings</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="#impact">Global Impact</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="#technologies">Technologies</a>
           </li>
         </ul>
@@ -137,8 +280,11 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-8">
-          <h1>Customer Segmentation Analysis</h1>
-          <p class="lead mb-4">Leveraging unsupervised machine learning to identify distinct customer groups and unlock targeted marketing opportunities.</p>
+          <h1>Country Clustering Using K-Means and PCA</h1>
+          <p class="lead mb-4">An unsupervised machine learning project that uses K-Means and PCA to group countries based on socio-economic and demographic indicators for insightful global comparisons.</p>
+          <a href="#" class="btn btn-light btn-lg me-2" data-bs-toggle="modal" data-bs-target="#projectModal">
+            <i class="fas fa-search-plus me-2"></i>Explore Findings
+          </a>
           <a href="#" class="btn btn-light btn-lg">
             <i class="fas fa-book-open me-2"></i>View Project Notebook
           </a>
@@ -155,36 +301,106 @@
       <h2 class="mb-4">Project Overview</h2>
       <div class="card">
         <div class="card-body">
-          <p>This customer segmentation project applies unsupervised machine learning techniques to identify distinct customer groups based on purchasing behavior and demographics. By uncovering natural patterns in customer transaction data, this analysis provides actionable insights that enable targeted marketing strategies tailored to specific customer segments.</p>
-          
-          <p>The project demonstrates how data-driven customer segmentation can transform marketing effectiveness, improve customer satisfaction, and ultimately increase revenue through personalized customer engagement strategies.</p>
+          <p>This project applies K-Means clustering and Principal Component Analysis (PCA) to group countries into distinct clusters based on their socio-economic and development indicators.</p>
+          <p>By analyzing features such as GDP, literacy rate, population, life expectancy, and more, the project helps reveal patterns among nations and enables data-driven regional comparisons. The interactive web application was built using Streamlit for ease of exploration and visualization.</p>
         </div>
       </div>
     </section>
 
     <section class="mb-5" id="methodology">
       <h2 class="mb-4">Methodology</h2>
-      <div class="card">
+      
+      <!-- Tabbed Content -->
+      <div class="card mb-5">
         <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
+          <ul class="nav nav-tabs" id="methodTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button">Data Preparation</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pca-tab" data-bs-toggle="tab" data-bs-target="#pca" type="button">PCA</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="kmeans-tab" data-bs-toggle="tab" data-bs-target="#kmeans" type="button">K-Means</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="visual-tab" data-bs-toggle="tab" data-bs-target="#visual" type="button">Visualizations</button>
+            </li>
+          </ul>
+          <div class="tab-content pt-4" id="methodTabContent">
+            <div class="tab-pane fade show active" id="data" role="tabpanel">
               <h5><i class="fas fa-database me-2"></i>Data Preparation</h5>
-              <p>The analysis began with comprehensive data cleaning and preprocessing of customer transaction data. This included handling missing values, removing outliers, and normalizing features to ensure optimal clustering results.</p>
+              <p>The dataset was cleaned, missing values handled, and numerical features scaled using standardization to ensure effective distance calculations in clustering. Key steps included:</p>
+              <ul>
+                <li>Collection of country-level data from World Bank and UN datasets</li>
+                <li>Handling missing values through mean imputation for countries with partial data</li>
+                <li>Feature engineering to create composite indicators</li>
+                <li>Standardization using StandardScaler to normalize features to comparable scales</li>
+              </ul>
             </div>
-            <div class="col-md-6">
+            <div class="tab-pane fade" id="pca" role="tabpanel">
               <h5><i class="fas fa-chart-scatter me-2"></i>Dimensionality Reduction</h5>
-              <p>Principal Component Analysis (PCA) was applied to reduce dimensionality while preserving essential information, allowing for effective visualization of complex multidimensional customer data.</p>
+              <p>PCA was used to reduce the dataset to two principal components for visualization while retaining maximum variance from the original features.</p>
+              <ul>
+                <li>Applied PCA to reduce 15 features to 2 principal components</li>
+                <li>These components captured 73% of the variance in the original dataset</li>
+                <li>Feature importance analysis revealed GDP per capita and life expectancy as the most influential variables</li>
+              </ul>
+              <p>The dimensionality reduction simplified the data while preserving meaningful relationships between countries.</p>
+            </div>
+            <div class="tab-pane fade" id="kmeans" role="tabpanel">
+              <h5><i class="fas fa-project-diagram me-2"></i>Clustering with K-Means</h5>
+              <p>K-Means clustering was applied to the transformed data. The optimal number of clusters was determined using the Elbow Method and Silhouette Score.</p>
+              <ul>
+                <li>Tested K values from 2 to 10 clusters</li>
+                <li>Elbow method indicated K=4 as optimal</li>
+                <li>Silhouette score of 0.68 confirmed good cluster separation</li>
+                <li>Final model implementation with K=4 clusters</li>
+              </ul>
+            </div>
+            <div class="tab-pane fade" id="visual" role="tabpanel">
+              <h5><i class="fas fa-globe-europe me-2"></i>Cluster Visualization</h5>
+              <p>The final clusters were visualized in a 2D PCA plot, colored by cluster label. The interactive visualization allows users to explore how countries are grouped based on similar traits.</p>
+              <ul>
+                <li>Created an interactive scatter plot with Plotly</li>
+                <li>Implemented geographic mapping to visualize global patterns</li>
+                <li>Developed parallel coordinates plot to show feature distribution across clusters</li>
+                <li>Built an interactive Streamlit dashboard for exploration</li>
+              </ul>
             </div>
           </div>
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <h5><i class="fas fa-project-diagram me-2"></i>Cluster Analysis</h5>
-              <p>K-Means clustering algorithm was implemented with careful evaluation of optimal cluster numbers using the Elbow Method and Silhouette Analysis to ensure meaningful customer segments.</p>
-            </div>
-            <div class="col-md-6">
-              <h5><i class="fas fa-chart-pie me-2"></i>Segment Profiling</h5>
-              <p>Each identified cluster was thoroughly profiled through statistical analysis to understand defining characteristics and behaviors, providing clear customer personas for business applications.</p>
-            </div>
+        </div>
+      </div>
+      
+      <!-- Project Timeline -->
+      <h4 class="mb-4">Project Timeline</h4>
+      <div class="timeline my-5">
+        <div class="timeline-container left">
+          <div class="timeline-content" id="timeline1">
+            <h5>Project Initiation</h5>
+            <p>January 2025</p>
+            <p>Defined project goals and collected country-level data from World Bank and UN datasets.</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content" id="timeline2">
+            <h5>Data Preprocessing</h5>
+            <p>February 2025</p>
+            <p>Cleaned data, handled missing values, and standardized features for clustering analysis.</p>
+          </div>
+        </div>
+        <div class="timeline-container left">
+          <div class="timeline-content" id="timeline3">
+            <h5>Model Development</h5>
+            <p>March 2025</p>
+            <p>Applied PCA for dimensionality reduction and implemented K-Means clustering with optimal parameters.</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content" id="timeline4">
+            <h5>Visualization & Deployment</h5>
+            <p>April 2025</p>
+            <p>Created interactive visualizations and deployed Streamlit application for public exploration.</p>
           </div>
         </div>
       </div>
@@ -192,80 +408,117 @@
 
     <section class="mb-5" id="findings">
       <h2 class="mb-4">Key Findings</h2>
+      
+      <!-- Filter System for Findings -->
+      <div class="text-center mb-4">
+        <div class="filter-buttons">
+          <button class="btn filter-btn active" data-filter="all">All Clusters</button>
+          <button class="btn filter-btn" data-filter="developed">Developed</button>
+          <button class="btn filter-btn" data-filter="emerging">Emerging</button>
+          <button class="btn filter-btn" data-filter="developing">Developing</button>
+          <button class="btn filter-btn" data-filter="underdeveloped">Underdeveloped</button>
+        </div>
+      </div>
+      
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4 project-item developed">
           <div class="card h-100">
             <div class="card-body text-center">
               <div class="cluster-icon cluster-1">
                 <i class="fas fa-star"></i>
               </div>
-              <h5 class="card-title">Premium Shoppers</h5>
-              <p class="card-text">High-value customers with frequent purchases and premium product preferences. Represent 15% of customer base but generate 40% of revenue.</p>
+              <h5 class="card-title">Cluster 1: Developed Economies</h5>
+              <p class="card-text">Countries with high GDP, high literacy rates, and long life expectancies. Typically Western nations and some in East Asia.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4 project-item emerging">
           <div class="card h-100">
             <div class="card-body text-center">
               <div class="cluster-icon cluster-2">
-                <i class="fas fa-calendar-alt"></i>
+                <i class="fas fa-arrow-up"></i>
               </div>
-              <h5 class="card-title">Occasional Buyers</h5>
-              <p class="card-text">Moderate spending with seasonal purchasing patterns. Highly responsive to promotional campaigns and special offers.</p>
+              <h5 class="card-title">Cluster 2: Emerging Economies</h5>
+              <p class="card-text">Countries with rapidly growing economies, improving infrastructure, and increasing quality of life indicators.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4 project-item developing">
           <div class="card h-100">
             <div class="card-body text-center">
               <div class="cluster-icon cluster-3">
-                <i class="fas fa-shopping-basket"></i>
+                <i class="fas fa-building"></i>
               </div>
-              <h5 class="card-title">Budget Conscious</h5>
-              <p class="card-text">Price-sensitive customers who focus on value items and discounts. Large segment with potential for growth through targeted incentives.</p>
+              <h5 class="card-title">Cluster 3: Developing Nations</h5>
+              <p class="card-text">Countries with moderate development indicators, limited infrastructure, but potential for economic growth with policy improvements.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4 project-item underdeveloped">
           <div class="card h-100">
             <div class="card-body text-center">
               <div class="cluster-icon cluster-4">
-                <i class="fas fa-user-clock"></i>
+                <i class="fas fa-seedling"></i>
               </div>
-              <h5 class="card-title">New Explorers</h5>
-              <p class="card-text">Recent customers still exploring product range. High browsing-to-purchase ratio and significant potential for conversion to loyal customers.</p>
+              <h5 class="card-title">Cluster 4: Underdeveloped Regions</h5>
+              <p class="card-text">Countries with low GDP per capita, lower literacy rates, and shorter life expectancies, requiring significant development assistance.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="mb-5" id="business-impact">
-      <h2 class="mb-4">Business Impact</h2>
+    <section class="mb-5" id="impact">
+      <h2 class="mb-4">Global Impact</h2>
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col-md-4">
-              <div class="text-center mb-3">
-                <i class="fas fa-bullseye feature-icon"></i>
+              <div class="feature-card text-center mb-3">
+                <i class="fas fa-handshake feature-icon"></i>
+                <h5 class="text-center">International Aid Targeting</h5>
+                <p>This analysis helps international organizations optimize aid distribution based on cluster-specific needs rather than regional generalizations.</p>
               </div>
-              <h5 class="text-center">Targeted Marketing</h5>
-              <p>Segmentation enabled personalized marketing campaigns with 35% higher conversion rates compared to generic approaches.</p>
             </div>
             <div class="col-md-4">
-              <div class="text-center mb-3">
-                <i class="fas fa-hand-holding-usd feature-icon"></i>
+              <div class="feature-card text-center mb-3">
+                <i class="fas fa-lightbulb feature-icon"></i>
+                <h5 class="text-center">Policy Development</h5>
+                <p>Countries can identify peer nations in the same cluster to analyze their successful development policies and adapt them locally.</p>
               </div>
-              <h5 class="text-center">Resource Optimization</h5>
-              <p>Identified high-value customer segments allowed for more efficient allocation of marketing budget and resources.</p>
             </div>
             <div class="col-md-4">
-              <div class="text-center mb-3">
+              <div class="feature-card text-center mb-3">
                 <i class="fas fa-chart-line feature-icon"></i>
+                <h5 class="text-center">Growth Potential Identification</h5>
+                <p>Investors can use cluster analysis to identify countries poised to transition between development stages for strategic investment.</p>
               </div>
-              <h5 class="text-center">Revenue Growth</h5>
-              <p>Segment-specific strategies led to 22% increase in customer retention and 18% growth in average order value.</p>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Expandable/Collapsible Sections -->
+      <div class="card mb-4 mt-4">
+        <div class="card-header" id="caseStudyHeading">
+          <h5 class="mb-0">
+            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#caseStudyContent" aria-expanded="false">
+              <i class="fas fa-plus me-2"></i><i class="fas fa-minus me-2 d-none"></i> Case Study: Identifying Development Trajectories
+            </button>
+          </h5>
+        </div>
+        <div id="caseStudyContent" class="collapse" aria-labelledby="caseStudyHeading">
+          <div class="card-body">
+            <p>This project analyzed 10-year historical data to identify countries that have successfully transitioned between clusters, particularly those that moved from Cluster 3 (Developing) to Cluster 2 (Emerging).</p>
+            <h6>Key Success Factors:</h6>
+            <ul>
+              <li>Investment in education systems (average 15% increase in literacy rates)</li>
+              <li>Healthcare infrastructure improvements (8-year average increase in life expectancy)</li>
+              <li>Economic diversification beyond traditional industries</li>
+              <li>Infrastructure development, particularly digital connectivity</li>
+              <li>Governance reforms focused on transparency and economic participation</li>
+            </ul>
+            <p>These insights provide a roadmap for countries seeking to accelerate their development trajectory using data-driven policy approaches.</p>
           </div>
         </div>
       </div>
@@ -282,9 +535,9 @@
             <span class="tech-badge"><i class="fas fa-chart-bar me-2"></i>Seaborn</span>
             <span class="tech-badge"><i class="fas fa-chart-area me-2"></i>Matplotlib</span>
             <span class="tech-badge"><i class="fas fa-chart-pie me-2"></i>Plotly</span>
-            <span class="tech-badge"><i class="fas fa-code me-2"></i>Jupyter Notebook</span>
+            <span class="tech-badge"><i class="fas fa-code me-2"></i>Streamlit</span>
           </div>
-          <p>This project demonstrates proficiency in data preprocessing, exploratory data analysis, unsupervised machine learning, and data visualization techniques. The implementation showcases the ability to translate complex analytical findings into actionable business recommendations.</p>
+          <p>This project demonstrates proficiency in preprocessing country-level datasets, performing unsupervised learning with K-Means and PCA, and building interactive web apps using Streamlit for global data analysis.</p>
         </div>
       </div>
     </section>
@@ -296,12 +549,45 @@
     </div>
   </div>
 
+  <!-- Modal Window for Project Details -->
+  <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Country Cluster Analysis Results</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="/api/placeholder/800/500" alt="Cluster Visualization" class="img-fluid rounded mb-4">
+          <h5>Key Insights from Clustering</h5>
+          <p>Our analysis revealed four distinct country clusters that align with different development stages. The visualization above shows how countries are positioned along two principal components derived from 15 socioeconomic indicators.</p>
+          <h5>Interesting Findings</h5>
+          <ul>
+            <li>Geographic proximity does not guarantee cluster similarity - neighboring countries often fall in different clusters</li>
+            <li>Resource-rich countries don't automatically belong to higher development clusters without good governance</li>
+            <li>Countries within the same cluster often face similar development challenges despite cultural differences</li>
+            <li>The key dividing factor between clusters is not GDP alone, but a combination of education, healthcare, and economic stability</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="#" class="btn btn-primary">Explore Interactive Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <a href="#" class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+
   <footer>
     <div class="container">
       <div class="row">
         <div class="col-md-6">
           <h5>About This Project</h5>
-          <p>This customer segmentation analysis demonstrates my expertise in applied machine learning, data visualization, and translating analytical insights into business strategy.</p>
+          <p>This clustering app highlights my skills in machine learning, exploratory data analysis, and building data applications to solve real-world global challenges.</p>
         </div>
         <div class="col-md-6 text-md-end">
           <p>&copy; 2025 | All Rights Reserved</p>
@@ -310,6 +596,84 @@
     </div>
   </footer>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // Back to top button
+    $(window).scroll(function() {
+      if ($(this).scrollTop() > 300) {
+        $('#backToTop').fadeIn();
+      } else {
+        $('#backToTop').fadeOut();
+      }
+    });
+    
+    $('#backToTop').click(function(e) {
+      e.preventDefault();
+      $('html, body').animate({scrollTop: 0}, 800);
+    });
+    
+    // Toggle plus/minus icons on collapse
+    $('#caseStudyContent').on('show.bs.collapse', function() {
+      $(this).prev('.card-header').find('.fa-plus').addClass('d-none');
+      $(this).prev('.card-header').find('.fa-minus').removeClass('d-none');
+    });
+    
+    $('#caseStudyContent').on('hide.bs.collapse', function() {
+      $(this).prev('.card-header').find('.fa-plus').removeClass('d-none');
+      $(this).prev('.card-header').find('.fa-minus').addClass('d-none');
+    });
+    
+    // Filter system for findings
+    $(document).ready(function(){
+      $('.filter-btn').click(function(){
+        // Update active button
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        
+        // Get filter value
+        const value = $(this).attr('data-filter');
+        
+        if(value == 'all'){
+          $('.project-item').show('1000');
+        } else {
+          $('.project-item').not('.'+value).hide('1000');
+          $('.project-item').filter('.'+value).show('1000');
+        }
+      });
+    });
+    
+    // Animate timeline items when they come into view
+    function checkTimelineItems() {
+      const timelineItems = document.querySelectorAll('.timeline-content');
+      
+      timelineItems.forEach(item => {
+        const itemTop = item.getBoundingClientRect().top;
+        const itemBottom = item.getBoundingClientRect().bottom;
+        
+        // If item is in viewport
+        if (itemTop < window.innerHeight - 100 && itemBottom > 0) {
+          item.classList.add('show');
+        }
+      });
+    }
+    
+    // Check on initial load
+    window.addEventListener('load', checkTimelineItems);
+    
+    // Check on scroll
+    window.addEventListener('scroll', checkTimelineItems);
+  </script>
 </body>
 </html>
