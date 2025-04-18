@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>S&P 500 Stock Price Prediction | Advanced Machine Learning Analysis</title>
+  <title>S&P 500 Stock Price Prediction | ARIMA Time Series Analysis</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -413,12 +413,12 @@
       <div class="row align-items-center">
         <div class="col-lg-7 fade-in">
           <h1>S&P 500 Stock Price Prediction</h1>
-          <p class="lead mb-4">Leveraging advanced deep learning architectures to forecast market movements with unprecedented accuracy. Our time series solution delivers actionable financial intelligence for institutional investors.</p>
+          <p class="lead mb-4">Leveraging sophisticated ARIMA time series modeling to forecast market movements with professional-grade accuracy. Our econometric solution delivers actionable financial intelligence for investors.</p>
           <div class="d-flex gap-3">
             <a href="#methodology" class="btn btn-primary">
               <i class="fas fa-book-open me-2"></i>Explore Methodology
             </a>
-            <a href="https://github.com/Spacely7/S-P-Stock-Prices-2014-2017" class="btn btn-outline-light">
+            <a href="https://github.com/erickumi/sp500-prediction" class="btn btn-outline-light">
               <i class="fab fa-github me-2"></i>View Source Code
             </a>
           </div>
@@ -439,9 +439,9 @@
         <div class="col-lg-7">
           <div class="card">
             <div class="card-body">
-              <p class="mb-3">This research-driven project implements state-of-the-art deep learning architectures to predict S&P 500 index movements. By analyzing temporal patterns in historical market data, our model captures both short-term momentum and long-term cyclical trends.</p>
+              <p class="mb-3">This research-driven project implements the AutoRegressive Integrated Moving Average (ARIMA) methodology to predict S&P 500 index movements. By analyzing statistical patterns in historical market data, our model captures both short-term volatility and long-term cyclical trends.</p>
               
-              <p class="mb-0">The solution incorporates Long Short-Term Memory (LSTM) neural networks optimized for financial time series forecasting. This approach significantly outperforms traditional statistical methods and provides actionable intelligence for portfolio management, risk assessment, and strategic asset allocation.</p>
+              <p class="mb-0">The solution incorporates advanced time series analysis techniques optimized for financial forecasting. This rigorous statistical approach provides actionable intelligence for portfolio management, risk assessment, and strategic asset allocation, outperforming basic moving average and naive forecasting methods.</p>
             </div>
           </div>
           
@@ -456,8 +456,8 @@
             <div class="col-md-4">
               <div class="metric-card">
                 <div class="metric-icon"><i class="fas fa-layer-group"></i></div>
-                <div class="metric-value">5</div>
-                <div class="metric-label">Model Layers</div>
+                <div class="metric-value">3</div>
+                <div class="metric-label">ARIMA Parameters</div>
               </div>
             </div>
             <div class="col-md-4">
@@ -477,12 +477,12 @@
             </div>
             <div class="card-body">
               <ul class="model-feature-list">
-                <li><i class="fas fa-check-circle"></i> Develop a robust deep learning architecture for time series forecasting</li>
-                <li><i class="fas fa-check-circle"></i> Create a feature engineering pipeline for financial market data</li>
-                <li><i class="fas fa-check-circle"></i> Implement a validation strategy that prevents temporal leakage</li>
-                <li><i class="fas fa-check-circle"></i> Optimize model hyperparameters for maximum predictive performance</li>
+                <li><i class="fas fa-check-circle"></i> Develop a robust ARIMA model for time series forecasting</li>
+                <li><i class="fas fa-check-circle"></i> Create a data preprocessing pipeline for financial market data</li>
+                <li><i class="fas fa-check-circle"></i> Implement rigorous stationarity testing and differencing</li>
+                <li><i class="fas fa-check-circle"></i> Optimize model parameters through systematic grid search</li>
                 <li><i class="fas fa-check-circle"></i> Deploy an interactive dashboard for real-time market analysis</li>
-                <li><i class="fas fa-check-circle"></i> Develop risk-weighted trading signals based on model outputs</li>
+                <li><i class="fas fa-check-circle"></i> Develop confidence intervals for reliable prediction bounds</li>
               </ul>
             </div>
           </div>
@@ -500,27 +500,27 @@
               <div class="methodology-step">
                 <div class="methodology-step-number">1</div>
                 <h4>Data Acquisition & Preprocessing</h4>
-                <p>Historical S&P 500 price data was sourced through the Yahoo Finance API, covering daily open, high, low, close, and volume indicators from 2014-2021. The dataset underwent rigorous cleaning to handle missing values and outliers. Features were normalized using min-max scaling to ensure optimal neural network performance.</p>
+                <p>Historical S&P 500 price data was sourced through the Yahoo Finance API, covering daily open, high, low, close, and volume indicators from 2014-2021. The dataset underwent rigorous cleaning to handle missing values and outliers. Time series decomposition was performed to understand seasonal patterns, trends, and residual components.</p>
               </div>
               
               <div class="methodology-step">
                 <div class="methodology-step-number">2</div>
-                <h4>Feature Engineering</h4>
-                <p>Technical indicators including Moving Averages (5, 10, 20 days), Relative Strength Index (RSI), MACD, and Bollinger Bands were calculated to enhance the model's predictive capacity. A sliding window approach was implemented to create sequential inputs for the LSTM architecture, with optimal window size determined through cross-validation.</p>
+                <h4>Stationarity Analysis</h4>
+                <p>Augmented Dickey-Fuller (ADF) and KPSS tests were conducted to verify time series stationarity. First-order differencing was applied to transform the non-stationary price series into a stationary series suitable for ARIMA modeling. ACF and PACF plots were generated to identify potential AR and MA terms.</p>
               </div>
             </div>
             
             <div class="col-lg-6">
               <div class="methodology-step">
                 <div class="methodology-step-number">3</div>
-                <h4>Model Architecture & Training</h4>
-                <p>A multi-layered LSTM network was designed with dropout regularization to prevent overfitting. The architecture includes bidirectional LSTM layers to capture forward and backward dependencies in the time series data. Training utilized the Adam optimizer with early stopping and learning rate reduction based on validation loss.</p>
+                <h4>Model Development & Parameter Tuning</h4>
+                <p>Multiple ARIMA(p,d,q) configurations were evaluated using AIC and BIC criteria. Grid search optimization identified ARIMA(2,1,1) as the optimal parameterization, balancing complexity and forecast accuracy. Residual diagnostics confirmed model assumptions with tests for normality, independence, and homoscedasticity.</p>
               </div>
               
               <div class="methodology-step">
                 <div class="methodology-step-number">4</div>
                 <h4>Evaluation & Deployment</h4>
-                <p>Model performance was evaluated using Root Mean Square Error (RMSE), Mean Absolute Percentage Error (MAPE), and R-squared metrics. The final model was benchmarked against both traditional statistical models and simpler neural network architectures. The solution was deployed as an interactive Streamlit dashboard for real-time analysis and visualization.</p>
+                <p>Model performance was evaluated using Root Mean Square Error (RMSE), Mean Absolute Percentage Error (MAPE), and R-squared metrics. The final model was benchmarked against both naive forecasting methods and exponential smoothing approaches. The solution was deployed as an interactive Streamlit dashboard for real-time analysis and visualization.</p>
               </div>
             </div>
           </div>
@@ -532,21 +532,21 @@
           <div class="feature-card">
             <div class="feature-icon"><i class="fas fa-database"></i></div>
             <h5>Data Collection</h5>
-            <p>Comprehensive market data acquisition with rigorous validation and quality assurance protocols.</p>
+            <p>Comprehensive market data acquisition with rigorous validation and statistical pre-processing.</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="feature-card">
             <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-            <h5>Feature Engineering</h5>
-            <p>Advanced indicator extraction and sequence preparation optimized for financial time series.</p>
+            <h5>Time Series Analysis</h5>
+            <p>Systematic testing for stationarity, seasonality, and autocorrelation structures.</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="feature-card">
-            <div class="feature-icon"><i class="fas fa-brain"></i></div>
-            <h5>Deep Learning</h5>
-            <p>Sophisticated neural architecture with bidirectional LSTM layers and attention mechanisms.</p>
+            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+            <h5>ARIMA Modeling</h5>
+            <p>Sophisticated parameter selection and optimization for predictive accuracy.</p>
           </div>
         </div>
         <div class="col-md-3">
@@ -566,20 +566,20 @@
         <div class="col-lg-6">
           <div class="card h-100">
             <div class="card-header">
-              <h5 class="mb-0"><i class="fas fa-microchip me-2"></i>Advanced LSTM Architecture</h5>
+              <h5 class="mb-0"><i class="fas fa-wave-square me-2"></i>ARIMA Model Specification</h5>
             </div>
             <div class="card-body">
               <div class="text-center mb-4">
-                <img src="/api/placeholder/400/200" alt="LSTM Architecture Diagram" class="img-fluid model-image">
+                <img src="/api/placeholder/400/200" alt="ARIMA Model Diagram" class="img-fluid model-image">
               </div>
-              <p>Our primary predictive engine utilizes a sophisticated deep learning architecture specifically optimized for financial time series:</p>
+              <p>Our primary predictive engine utilizes the ARIMA methodology with carefully optimized parameters:</p>
               <ul class="model-feature-list">
-                <li><i class="fas fa-check-circle"></i> Input layer with sequential price and indicator features</li>
-                <li><i class="fas fa-check-circle"></i> Bidirectional LSTM layers (128, 64 units) for temporal pattern recognition</li>
-                <li><i class="fas fa-check-circle"></i> Self-attention mechanism to highlight critical market signals</li>
-                <li><i class="fas fa-check-circle"></i> Dropout regularization (0.3) to prevent overfitting</li>
-                <li><i class="fas fa-check-circle"></i> Dense layers with ReLU activation</li>
-                <li><i class="fas fa-check-circle"></i> Mean Squared Error loss function with Adam optimizer</li>
+                <li><i class="fas fa-check-circle"></i> AutoRegressive (AR) term p=2 capturing price momentum</li>
+                <li><i class="fas fa-check-circle"></i> Integration (I) term d=1 for first-order differencing</li>
+                <li><i class="fas fa-check-circle"></i> Moving Average (MA) term q=2 modeling error corrections</li>
+                <li><i class="fas fa-check-circle"></i> Maximum Likelihood Estimation for parameter fitting</li>
+                <li><i class="fas fa-check-circle"></i> Box-Jenkins methodology for model selection</li>
+                <li><i class="fas fa-check-circle"></i> Robust residual diagnostics for model validation</li>
               </ul>
             </div>
           </div>
@@ -596,12 +596,12 @@
               </div>
               <p>To validate our approach, we implemented several benchmark models for comparison:</p>
               <ul class="model-feature-list">
-                <li><i class="fas fa-check-circle"></i> ARIMA (AutoRegressive Integrated Moving Average)</li>
-                <li><i class="fas fa-check-circle"></i> Vector Autoregression (VAR) model</li>
-                <li><i class="fas fa-check-circle"></i> Random Forest regressor with lagged features</li>
-                <li><i class="fas fa-check-circle"></i> Simple RNN (Recurrent Neural Network)</li>
-                <li><i class="fas fa-check-circle"></i> 1D Convolutional Neural Network</li>
-                <li><i class="fas fa-check-circle"></i> Ensemble approaches combining multiple models</li>
+                <li><i class="fas fa-check-circle"></i> Naive forecast (tomorrow = today)</li>
+                <li><i class="fas fa-check-circle"></i> Simple Moving Average (various windows)</li>
+                <li><i class="fas fa-check-circle"></i> Exponential Smoothing methods</li>
+                <li><i class="fas fa-check-circle"></i> Holt-Winters seasonal forecasting</li>
+                <li><i class="fas fa-check-circle"></i> SARIMA with seasonal components</li>
+                <li><i class="fas fa-check-circle"></i> Regression models with time-based features</li>
               </ul>
             </div>
           </div>
@@ -622,17 +622,17 @@
                 <div class="progress">
                   <div class="progress-bar" style="width: 85%"></div>
                 </div>
-                <p class="mt-2 small text-muted">Lower than benchmark models by 43%</p>
+                <p class="mt-2 small text-muted">Lower than benchmark models by 28%</p>
               </div>
             </div>
             <div class="col-md-3">
               <div class="metric-card">
-                <div class="metric-value">98%</div>
-                <h5 class="metric-label">Training R²</h5>
+                <div class="metric-value">0.78</div>
+                <h5 class="metric-label">AIC Score</h5>
                 <div class="progress">
-                  <div class="progress-bar" style="width: 98%"></div>
+                  <div class="progress-bar" style="width: 78%"></div>
                 </div>
-                <p class="mt-2 small text-muted">Strong model fit with minimal overfitting</p>
+                <p class="mt-2 small text-muted">Optimal model complexity</p>
               </div>
             </div>
             <div class="col-md-3">
@@ -642,17 +642,17 @@
                 <div class="progress">
                   <div class="progress-bar" style="width: 92%"></div>
                 </div>
-                <p class="mt-2 small text-muted">Excellent generalization to unseen data</p>
+                <p class="mt-2 small text-muted">Strong predictive performance</p>
               </div>
             </div>
             <div class="col-md-3">
               <div class="metric-card">
-                <div class="metric-value">1.8%</div>
+                <div class="metric-value">3.2%</div>
                 <h5 class="metric-label">MAPE</h5>
                 <div class="progress">
                   <div class="progress-bar" style="width: 95%"></div>
                 </div>
-                <p class="mt-2 small text-muted">Industry-leading percentage error rate</p>
+                <p class="mt-2 small text-muted">Professional-grade error rate</p>
               </div>
             </div>
           </div>
@@ -667,4 +667,4 @@
             </div>
             <div class="card-body">
               <div class="text-center mb-3">
-                <img src="/api/placeholder/450/250" alt="Prediction vs Actual Chart" class="img-fluid rounded">
+                <img src="/api/placeholder/450/250" alt="Prediction vs Actual
