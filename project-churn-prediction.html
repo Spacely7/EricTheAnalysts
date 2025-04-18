@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>S&P 500 Stock Price | Machine Learning Project</title>
+  <title>S&P 500 Stock Analysis (2014-2017)</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -11,6 +11,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f8f9fa;
       color: #333;
+      padding-top: 60px;
     }
     .hero-section {
       background-color: #0d6efd;
@@ -31,6 +32,7 @@
       border: none;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
     }
     .card-header {
       background-color: #f8f9fa;
@@ -39,6 +41,7 @@
     .feature-icon {
       font-size: 2rem;
       color: #0d6efd;
+      margin-bottom: 15px;
     }
     .btn-primary {
       background-color: #0d6efd;
@@ -57,12 +60,23 @@
       font-weight: 700;
       color: #0d6efd;
     }
-    .progress {
-      height: 10px;
-      border-radius: 5px;
+    .sidebar {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    .progress-bar {
+    .nav-pills .nav-link.active {
       background-color: #0d6efd;
+    }
+    .chart-container {
+      height: 400px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
     }
     footer {
       background-color: #212529;
@@ -70,14 +84,23 @@
       padding: 2rem 0;
       margin-top: 3rem;
     }
+    .page-content {
+      display: none;
+    }
+    .page-content.active {
+      display: block;
+    }
+    .stock-select, .date-select {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="index.html">
-        <i class="fas fa-chevron-left me-2"></i>Back to Portfolio
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-chart-line me-2"></i>S&P 500 Stock Analysis
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -85,171 +108,628 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
-          <li class="nav-item"><a class="nav-link" href="#approach">Approach</a></li>
-          <li class="nav-item"><a class="nav-link" href="#models">Models</a></li>
-          <li class="nav-item"><a class="nav-link" href="#results">Results</a></li>
-          <li class="nav-item"><a class="nav-link" href="#impact">Business Impact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#documentation">Documentation</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <div class="hero-section mt-5">
+  <div class="hero-section">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-8">
-          <h1>S&P 500 Stock Price Prediction</h1>
-          <p class="lead mb-4">A time series machine learning solution to forecast S&P 500 prices and support smarter investment strategies using deep learning.</p>
-          <a href="https://s-p-stock-prices-2014-2017.streamlit.app" class="btn btn-light btn-lg">
-            <i class="fab fa-github me-2"></i>View Dashboard Analysis
+          <h1>S&P 500 Stock Price Analysis (2014-2017)</h1>
+          <p class="lead mb-4">Interactive analysis of S&P 500 stock prices with price trends, volume analysis, comparative metrics, and technical indicators</p>
+          <a href="#dashboard" class="btn btn-light btn-lg">
+            <i class="fas fa-chart-bar me-2"></i>Explore Dashboard
           </a>
         </div>
         <div class="col-lg-4">
-          <img src="/api/placeholder/400/300" alt="Stock Forecast" class="img-fluid rounded shadow">
+          <img src="/api/placeholder/400/300" alt="Stock Analysis Dashboard" class="img-fluid rounded shadow">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Overview -->
-  <div class="container">
-    <section id="overview" class="mb-5">
-      <h2 class="mb-4">Project Overview</h2>
-      <div class="card">
-        <div class="card-body">
-          <p>This project focuses on predicting S&P 500 stock prices using historical data and machine learning. It involves the use of Long Short-Term Memory (LSTM) neural networks to learn trends and patterns from sequential stock price data.</p>
-          <p>The goal is to assist investors in making informed decisions by providing predictive insights into market movements. The project handles data sourcing, preprocessing, model training, and evaluation.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Approach -->
-    <section id="approach" class="mb-5">
-      <h2 class="mb-4">Project Approach</h2>
-      <div class="card">
-        <div class="card-body row text-center">
-          <div class="col-md-3 mb-4">
-            <div class="feature-icon"><i class="fas fa-database"></i></div>
-            <h5>Data Collection</h5>
-            <p>Downloaded historical stock price data of the S&P 500 index using Yahoo Finance API.</p>
-          </div>
-          <div class="col-md-3 mb-4">
-            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-            <h5>Data Preprocessing</h5>
-            <p>Normalized features and created input sequences using sliding window technique for time series.</p>
-          </div>
-          <div class="col-md-3 mb-4">
-            <div class="feature-icon"><i class="fas fa-robot"></i></div>
-            <h5>Modeling</h5>
-            <p>Used LSTM model with multiple layers to capture temporal dependencies in stock movements.</p>
-          </div>
-          <div class="col-md-3 mb-4">
-            <div class="feature-icon"><i class="fas fa-rocket"></i></div>
-            <h5>Evaluation</h5>
-            <p>Evaluated model with RMSE and plotted predicted vs actual trends on test set.</p>
+  <!-- Main Content -->
+  <div class="container" id="dashboard">
+    <div class="row mt-4">
+      <!-- Sidebar Navigation -->
+      <div class="col-md-3 mb-4">
+        <div class="sidebar sticky-top" style="top: 80px;">
+          <h5 class="mb-3">Navigation</h5>
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview-content" type="button">Overview</button>
+            <button class="nav-link" id="stock-price-tab" data-bs-toggle="pill" data-bs-target="#stock-price-content" type="button">Stock Price Analysis</button>
+            <button class="nav-link" id="volume-tab" data-bs-toggle="pill" data-bs-target="#volume-content" type="button">Volume Analysis</button>
+            <button class="nav-link" id="technical-tab" data-bs-toggle="pill" data-bs-target="#technical-content" type="button">Technical Indicators</button>
+            <button class="nav-link" id="comparative-tab" data-bs-toggle="pill" data-bs-target="#comparative-content" type="button">Comparative Analysis</button>
+            <button class="nav-link" id="data-explorer-tab" data-bs-toggle="pill" data-bs-target="#data-explorer-content" type="button">Data Explorer</button>
+            <button class="nav-link" id="predictive-tab" data-bs-toggle="pill" data-bs-target="#predictive-content" type="button">Predictive Modeling</button>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Models -->
-    <section id="models" class="mb-5">
-      <h2 class="mb-4">Model Development</h2>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-header"><h5><i class="fas fa-wave-square me-2"></i> LSTM Neural Network</h5></div>
-            <div class="card-body">
-              <p>This deep learning model is tailored for sequence prediction. It leverages memory cells to learn long-term patterns in stock prices.</p>
-              <ul>
-                <li>Multiple stacked LSTM layers</li>
-                <li>Dropout regularization</li>
-                <li>Adam optimizer and MSE loss</li>
-              </ul>
+      <!-- Content Area -->
+      <div class="col-md-9">
+        <div class="tab-content" id="v-pills-tabContent">
+          <!-- Overview Content -->
+          <div class="tab-pane fade show active" id="overview-content">
+            <h2>Overview of S&P 500 Stocks</h2>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">Dataset Information</div>
+                  <div class="card-body">
+                    <p><strong>Number of stocks:</strong> 500</p>
+                    <p><strong>Date range:</strong> January 1, 2014 to December 31, 2017</p>
+                    <p><strong>Total records:</strong> 502,000+</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">Sample Data</div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Symbol</th>
+                            <th>Date</th>
+                            <th>Open</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>AAPL</td>
+                            <td>2014-01-02</td>
+                            <td>78.21</td>
+                            <td>79.02</td>
+                            <td>72,841,200</td>
+                          </tr>
+                          <tr>
+                            <td>MSFT</td>
+                            <td>2014-01-02</td>
+                            <td>37.35</td>
+                            <td>37.16</td>
+                            <td>43,195,300</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-header"><h5><i class="fas fa-chart-bar me-2"></i> Baseline Linear Model</h5></div>
-            <div class="card-body">
-              <p>Serves as a benchmark to compare deep learning performance. This model uses previous price points to linearly forecast future values.</p>
-              <ul>
-                <li>Simple linear regression</li>
-                <li>Short-term forecast baseline</li>
-                <li>Good for interpretability</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Results -->
-    <section id="results" class="mb-5">
-      <h2 class="mb-4">Model Performance</h2>
-      <div class="card">
-        <div class="card-body row text-center">
-          <div class="col-md-3">
-            <div class="metric-card">
-              <div class="metric-value">2.14</div>
-              <h5>RMSE</h5>
-              <div class="progress mt-2">
-                <div class="progress-bar" style="width: 60%"></div>
+            <div class="card mt-4">
+              <div class="card-header">Market Overview</div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="dateSlider" class="form-label">Select date to view market snapshot:</label>
+                  <input type="date" class="form-control" id="dateSlider" min="2014-01-01" max="2017-12-31" value="2014-01-02">
+                </div>
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-tree-map feature-icon"></i>
+                    <p>Market Activity Treemap Visualization</p>
+                    <small class="text-muted">Interactive visualization would appear here in the live dashboard</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="metric-card">
-              <div class="metric-value">98%</div>
-              <h5>Train R²</h5>
-              <div class="progress mt-2">
-                <div class="progress-bar" style="width: 98%"></div>
+
+          <!-- Stock Price Analysis Content -->
+          <div class="tab-pane fade" id="stock-price-content">
+            <h2>Stock Price Analysis</h2>
+            <div class="card">
+              <div class="card-header">Select Stocks to Analyze</div>
+              <div class="card-body">
+                <select class="form-select stock-select" multiple aria-label="Select stocks">
+                  <option selected>AAPL</option>
+                  <option selected>MSFT</option>
+                  <option selected>GOOG</option>
+                  <option>AMZN</option>
+                  <option>FB</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Historical Price Trends</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <p>Closing Price Over Time</p>
+                    <small class="text-muted">Interactive line chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Candlestick Chart</div>
+              <div class="card-body">
+                <select class="form-select mb-3" aria-label="Select stock for candlestick">
+                  <option selected>AAPL</option>
+                  <option>MSFT</option>
+                  <option>GOOG</option>
+                </select>
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-candlestick feature-icon"></i>
+                    <p>AAPL Price Movement</p>
+                    <small class="text-muted">Interactive candlestick chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Stock Statistics</div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Symbol</th>
+                        <th>Avg Price</th>
+                        <th>Min Price</th>
+                        <th>Max Price</th>
+                        <th>Price Range</th>
+                        <th>Volatility</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>AAPL</td>
+                        <td>112.34</td>
+                        <td>69.43</td>
+                        <td>156.65</td>
+                        <td>87.22</td>
+                        <td>1.62%</td>
+                      </tr>
+                      <tr>
+                        <td>MSFT</td>
+                        <td>56.78</td>
+                        <td>34.63</td>
+                        <td>86.85</td>
+                        <td>52.22</td>
+                        <td>1.42%</td>
+                      </tr>
+                      <tr>
+                        <td>GOOG</td>
+                        <td>825.46</td>
+                        <td>492.55</td>
+                        <td>1078.49</td>
+                        <td>585.94</td>
+                        <td>1.57%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="metric-card">
-              <div class="metric-value">92%</div>
-              <h5>Test R²</h5>
-              <div class="progress mt-2">
-                <div class="progress-bar" style="width: 92%"></div>
+
+          <!-- Volume Analysis Content -->
+          <div class="tab-pane fade" id="volume-content">
+            <h2>Trading Volume Analysis</h2>
+            <div class="card">
+              <div class="card-header">Select Stocks for Volume Analysis</div>
+              <div class="card-body">
+                <select class="form-select stock-select" multiple aria-label="Select stocks">
+                  <option selected>AAPL</option>
+                  <option selected>MSFT</option>
+                  <option selected>GOOG</option>
+                  <option>AMZN</option>
+                  <option>FB</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Historical Trading Volumes</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-bar feature-icon"></i>
+                    <p>Trading Volume Over Time</p>
+                    <small class="text-muted">Interactive bar chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Price-Volume Relationship</div>
+              <div class="card-body">
+                <select class="form-select mb-3" aria-label="Select stock for price-volume">
+                  <option selected>AAPL</option>
+                  <option>MSFT</option>
+                  <option>GOOG</option>
+                </select>
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-column feature-icon"></i>
+                    <p>AAPL Price-Volume Relationship</p>
+                    <small class="text-muted">Interactive dual-axis chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Top Trading Days by Volume</div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Symbol</th>
+                        <th>Date</th>
+                        <th>Volume</th>
+                        <th>Close Price</th>
+                        <th>Daily Change</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>AAPL</td>
+                        <td>2014-09-19</td>
+                        <td>210,432,100</td>
+                        <td>102.32</td>
+                        <td>+0.23%</td>
+                      </tr>
+                      <tr>
+                        <td>MSFT</td>
+                        <td>2015-07-22</td>
+                        <td>164,245,300</td>
+                        <td>45.97</td>
+                        <td>-3.68%</td>
+                      </tr>
+                      <tr>
+                        <td>GOOG</td>
+                        <td>2017-06-09</td>
+                        <td>9,844,300</td>
+                        <td>935.38</td>
+                        <td>-3.42%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="metric-card">
-              <div class="metric-value">5%</div>
-              <h5>MAPE</h5>
-              <div class="progress mt-2">
-                <div class="progress-bar" style="width: 95%"></div>
+
+          <!-- Technical Indicators Content -->
+          <div class="tab-pane fade" id="technical-content">
+            <h2>Technical Indicators</h2>
+            <div class="card">
+              <div class="card-header">Select Stock for Technical Analysis</div>
+              <div class="card-body">
+                <select class="form-select" aria-label="Select stock">
+                  <option selected>AAPL</option>
+                  <option>MSFT</option>
+                  <option>GOOG</option>
+                  <option>AMZN</option>
+                  <option>FB</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Moving Averages</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <p>AAPL Price with Moving Averages</p>
+                    <small class="text-muted">Interactive MA chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Relative Strength Index (RSI)</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <p>AAPL RSI (14)</p>
+                    <small class="text-muted">Interactive RSI chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Daily Returns</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-bar feature-icon"></i>
+                    <p>AAPL Daily Returns</p>
+                    <small class="text-muted">Interactive returns chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <p class="mt-4">The LSTM model significantly outperforms the baseline, capturing non-linear dependencies and achieving high accuracy with low prediction error.</p>
-      </div>
-    </section>
 
-    <!-- Business Impact -->
-    <section id="impact" class="mb-5">
-      <h2 class="mb-4">Business Impact</h2>
-      <div class="card">
-        <div class="card-body">
-          <p>By leveraging machine learning to forecast S&P 500 prices, businesses and investors can enhance decision-making with data-driven insights. Predictive modeling supports risk management, strategy formulation, and improved timing of trades.</p>
-        </div>
-      </div>
-    </section>
-  </div>
+          <!-- Comparative Analysis Content -->
+          <div class="tab-pane fade" id="comparative-content">
+            <h2>Comparative Stock Analysis</h2>
+            <div class="card">
+              <div class="card-header">Select Stocks to Compare</div>
+              <div class="card-body">
+                <select class="form-select stock-select" multiple aria-label="Select stocks">
+                  <option selected>AAPL</option>
+                  <option selected>MSFT</option>
+                  <option selected>GOOG</option>
+                  <option selected>AMZN</option>
+                  <option>FB</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Normalized Price Comparison</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <p>Normalized Price Performance</p>
+                    <small class="text-muted">Interactive comparison chart would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Price Correlation Analysis</div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <div class="text-center">
+                    <i class="fas fa-border-all feature-icon"></i>
+                    <p>Price Correlation Matrix</p>
+                    <small class="text-muted">Interactive heatmap would appear here in the live dashboard</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Performance Statistics</div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Symbol</th>
+                        <th>Total Return (%)</th>
+                        <th>Volatility (%)</th>
+                        <th>Max Drawdown (%)</th>
+                        <th>Avg Volume</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>AAPL</td>
+                        <td>86.54</td>
+                        <td>1.62</td>
+                        <td>-14.23</td>
+                        <td>48,231,456</td>
+                      </tr>
+                      <tr>
+                        <td>MSFT</td>
+                        <td>104.32</td>
+                        <td>1.42</td>
+                        <td>-12.85</td>
+                        <td>32,654,789</td>
+                      </tr>
+                      <tr>
+                        <td>GOOG</td>
+                        <td>64.78</td>
+                        <td>1.57</td>
+                        <td>-15.67</td>
+                        <td>2,198,654</td>
+                      </tr>
+                      <tr>
+                        <td>AMZN</td>
+                        <td>221.43</td>
+                        <td>1.98</td>
+                        <td>-18.42</td>
+                        <td>4,856,237</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  <!-- Footer -->
-  <footer class="text-center">
-    <div class="container">
-      <p>&copy; 2025 Eric Kumi | Stock Price Prediction Portfolio</p>
-    </div>
-  </footer>
+          <!-- Data Explorer Content -->
+          <div class="tab-pane fade" id="data-explorer-content">
+            <h2>Data Explorer</h2>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-header">Filters</div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      <label for="stockSelect" class="form-label">Select stocks:</label>
+                      <select class="form-select" id="stockSelect" multiple>
+                        <option>AAPL</option>
+                        <option>MSFT</option>
+                        <option>GOOG</option>
+                        <option>AMZN</option>
+                        <option>FB</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="dateRange" class="form-label">Select date range:</label>
+                      <div class="input-group">
+                        <input type="date" class="form-control" min="2014-01-01" max="2017-12-31" value="2014-01-01">
+                        <span class="input-group-text">to</span>
+                        <input type="date" class="form-control" min="2014-01-01" max="2017-12-31" value="2017-12-31">
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="priceRange" class="form-label">Price range:</label>
+                      <div class="d-flex align-items-center">
+                        <span>$0</span>
+                        <input type="range" class="form-range mx-2" min="0" max="2000" value="1000" id="priceRange">
+                        <span>$2000</span>
+                      </div>
+                    </div>
+                    <button class="btn btn-primary w-100">Apply Filters</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="card">
+                  <div class="card-header">Filtered Data</div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Symbol</th>
+                            <th>Date</th>
+                            <th>Open</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>AAPL</td>
+                            <td>2014-01-02</td>
+                            <td>78.21</td>
+                            <td>79.58</td>
+                            <td>77.92</td>
+                            <td>79.02</td>
+                            <td>72,841,200</td>
+                          </tr>
+                          <tr>
+                            <td>AAPL</td>
+                            <td>2014-01-03</td>
+                            <td>78.98</td>
+                            <td>79.12</td>
+                            <td>76.85</td>
+                            <td>77.28</td>
+                            <td>75,329,700</td>
+                          </tr>
+                          <tr>
+                            <td>MSFT</td>
+                            <td>2014-01-02</td>
+                            <td>37.35</td>
+                            <td>37.40</td>
+                            <td>36.89</td>
+                            <td>37.16</td>
+                            <td>43,195,300</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <button class="btn btn-outline-primary mt-3">
+                      <i class="fas fa-download me-2"></i>Download Filtered Data
+                    </button>
+                  </div>
+                </div>
+                <div class="card mt-4">
+                  <div class="card-header">Summary Statistics</div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Statistic</th>
+                            <th>Open</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>count</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
+                          </tr>
+                          <tr>
+                            <td>mean</td>
+                            <td>64.85</td>
+                            <td>65.37</td>
+                            <td>63.89</td>
+                            <td>64.49</td>
+                            <td>63,788,733</td>
+                          </tr>
+                          <tr>
+                            <td>std</td>
+                            <td>19.32</td>
+                            <td>19.41</td>
+                            <td>19.07</td>
+                            <td>19.26</td>
+                            <td>14,580,371</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card mt-4">
+                  <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>Visualization</span>
+                      <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>Price Distribution</option>
+                        <option>Volume Distribution</option>
+                        <option>Scatter Plot</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-container">
+                      <div class="text-center">
+                        <i class="fas fa-chart-column feature-icon"></i>
+                        <p>Closing Price Distribution</p>
+                        <small class="text-muted">Interactive histogram would appear here in the live dashboard</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+          <!-- Predictive Modeling Content -->
+          <div class="tab-pane fade" id="predictive-content">
+            <h2>Stock Price Prediction Using Linear Regression</h2>
+            <div class="card">
+              <div class="card-header">Select Stock for Prediction</div>
+              <div class="card-body">
+                <select class="form-select mb-3" aria-label="Select stock for prediction">
+                  <option selected>AAPL</option>
+                  <option>MSFT</option>
+                  <option>GOOG</option>
+                  <option>AMZN</option>
+                  <option>FB</option>
+                </select>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">Model Performance</div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-md-3">
+                    <div class="metric-card">
+                      <div class="metric-value">2.14</div>
+                      <h5>RMSE</h5>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="metric-card">
+                      <div class="metric-
