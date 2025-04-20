@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Analytics Dashboard Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --dark: #242730;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #198754;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #0dcaf0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        nav {
+            background-color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .project-header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .project-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .project-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .project-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            width: 180px;
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .project-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .project-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .content-block {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .block-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .block-content {
+            color: var(--dark);
+            line-height: 1.8;
+        }
+        
+        .block-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .block-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: var(--dark);
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .screenshots {
+            margin: 3rem 0;
+        }
+        
+        .screenshots-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .screenshot {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .screenshot:hover {
+            transform: translateY(-5px);
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .screenshot-caption {
+            padding: 1rem;
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .cta {
+            text-align: center;
+            margin: 4rem 0;
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .cta-text {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: var(--gray);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-left: 1rem;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .social-link {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .social-link:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">DataInsights</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <header>
+        <div class="container">
+            <h1>Healthcare Insights Dashboard</h1>
+            <p>Interactive analytics platform for healthcare data visualization and prediction</p>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="project-header">
+                <h2 class="project-title">🏥 Healthcare Insights Dashboard</h2>
+                <p class="project-subtitle">A comprehensive analytics solution designed to transform healthcare data into actionable insights, helping medical institutions make data-driven decisions.</p>
+                
+                <div class="project-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="stat-value">Patient-Centric</div>
+                        <div class="stat-label">Analytics Approach</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">15+</div>
+                        <div class="stat-label">Visualization Types</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-value">ML Powered</div>
+                        <div class="stat-label">Predictive Analytics</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <div class="stat-value">Real-time</div>
+                        <div class="stat-label">Interactive Filtering</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-content">
+                <div class="content-block">
+                    <h3 class="block-title">
+                        <i class="fas fa-bullseye"></i>
+                        Project Overview
+                    </h3>
+                    <div class="block-content">
+                        <p>The Healthcare Insights Dashboard is an interactive web application built with Streamlit and Python that transforms raw healthcare data into meaningful visualizations and actionable insights. It combines descriptive analytics with predictive capabilities to help healthcare administrators, clinicians, and analysts make informed decisions.</p>
+                        <p>The dashboard provides a comprehensive view of patient demographics, medical conditions, billing trends, admission patterns, and more. It features interactive filters, downloadable reports, and even a machine learning model to predict patient test results based on various factors.</p>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h3 class="block-title">
+                        <i class="fas fa-cogs"></i>
+                        Key Features
+                    </h3>
+                    <div class="block-content">
+                        <ul>
+                            <li><strong>Interactive Data Exploration:</strong> Filter data by medical condition, gender, and more</li>
+                            <li><strong>Critical KPI Metrics:</strong> At-a-glance view of patient count, average billing amounts, and stay duration</li>
+                            <li><strong>Comprehensive Visualizations:</strong> Charts and graphs for patient demographics, billing categories, and medical conditions</li>
+                            <li><strong>Time Series Analysis:</strong> Track admissions, discharges, and billing trends over time</li>
+                            <li><strong>Data Quality Alerts:</strong> Automatic detection of anomalies like negative billing amounts</li>
+                            <li><strong>ML-Based Predictions:</strong> RandomForest model to predict test results for new patients</li>
+                            <li><strong>Export Functionality:</strong> Download filtered data for further analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h3 class="block-title">
+                        <i class="fas fa-laptop-code"></i>
+                        Technical Implementation
+                    </h3>
+                    <div class="block-content">
+                        <p>This project is built with the following technologies:</p>
+                        <div>
+                            <span class="tag">Python</span>
+                            <span class="tag">Streamlit</span>
+                            <span class="tag">Pandas</span>
+                            <span class="tag">Plotly</span>
+                            <span class="tag">scikit-learn</span>
+                            <span class="tag">RandomForest</span>
+                            <span class="tag">Data Visualization</span>
+                            <span class="tag">Machine Learning</span>
+                            <span class="tag">Healthcare Analytics</span>
+                        </div>
+                        <p style="margin-top: 1rem;">The application features optimized data processing with caching for improved performance, interactive data filters that update visualizations in real-time, and a machine learning pipeline using RandomForestClassifier to predict patient test results.</p>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                    <h3 class="block-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Analytics Capabilities
+                    </h3>
+                    <div class="block-content">
+                        <p>The dashboard provides multiple analytical perspectives:</p>
+                        <ul>
+                            <li><strong>Patient Demographics:</strong> Gender distribution and age analysis</li>
+                            <li><strong>Clinical Analysis:</strong> Medical conditions, test results, medications</li>
+                            <li><strong>Financial Insights:</strong> Billing categories, insurance providers, average billing by condition</li>
+                            <li><strong>Operational Metrics:</strong> Admission types, stay duration, monthly trends</li>
+                            <li><strong>Predictive Models:</strong> Test result prediction based on patient attributes</li>
+                        </ul>
+                        <p>Each visualization is designed to answer specific healthcare management questions and support strategic decision-making.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="screenshots">
+                <h3 class="screenshots-title">Dashboard Screenshots</h3>
+                <div class="screenshots-grid">
+                    <div class="screenshot">
+                        <img src="/api/placeholder/600/400" alt="KPI Metrics and Demographics">
+                        <div class="screenshot-caption">KPI Metrics and Patient Demographics View</div>
+                    </div>
+                    
+                    <div class="screenshot">
+                        <img src="/api/placeholder/600/400" alt="Medical Conditions Analysis">
+                        <div class="screenshot-caption">Medical Conditions and Billing Analysis</div>
+                    </div>
+                    
+                    <div class="screenshot">
+                        <img src="/api/placeholder/600/400" alt="Time Series Analysis">
+                        <div class="screenshot-caption">Admissions and Discharges Time Series Analysis</div>
+                    </div>
+                    
+                    <div class="screenshot">
+                        <img src="/api/placeholder/600/400" alt="ML Prediction Interface">
+                        <div class="screenshot-caption">Machine Learning Prediction Interface</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3 class="cta-title">Ready to Explore the Dashboard?</h3>
+                <p class="cta-text">Experience the power of interactive healthcare analytics with our comprehensive dashboard. Try it live or check out the source code to see how it's built.</p>
+                <a href="#" class="btn btn-primary">View Live Demo</a>
+                <a href="#" class="btn btn-outline">View Source Code</a>
+                <a href="projects.html" class="btn btn-outline">Back to Projects</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h3>DataInsights</h3>
+                <p>Transforming data into actionable insights through innovative analytics solutions.</p>
+                
+                <div class="social-links">
+                    <a href="mailto:erbeasku@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="https://www.linkedin.com/in/eric-kumi-0359922a1"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.tiktok.com/@erictheanalyst"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                
+                <div class="copyright">
+                    &copy;EricTheAnalyst | 2025 DataInsights. | All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
