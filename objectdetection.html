@@ -3,41 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Object Detection</title>
+  <title>Object Detection | Eric Kumi</title>
+  
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- TensorFlow.js -->
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- TensorFlow.js + COCO-SSD -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
   <style>
     body {
-      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: #f8f9fa;
     }
-    .camera-container, .upload-container {
-      position: relative;
-      display: inline-block;
-      max-width: 100%;
+    h1, h2, h3 {
+      font-weight: 600;
+    }
+    .navbar {
+      background: #1f1f1f !important;
+    }
+    .hero {
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+    .card-custom {
+      background: #1e1e1e;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      padding: 2rem;
+    }
+    .btn-custom {
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.3s ease-in-out;
+    }
+    .btn-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(13,110,253,0.5);
     }
     video, canvas, img {
       width: 100%;
       max-width: 700px;
-      border: 2px solid #0d6efd;
-      border-radius: 8px;
+      border-radius: 12px;
+      margin-top: 15px;
     }
-    #canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+    footer {
+      margin-top: 4rem;
+      padding: 2rem;
+      background: #1f1f1f;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">Eric Kumi Portfolio</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Eric Kumi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -52,30 +88,50 @@
     </div>
   </nav>
 
-  <!-- Page Content -->
-  <div class="container text-center mt-5">
-    <h1 class="mb-4">Real-Time Object Detection</h1>
-    <p class="lead">Choose webcam or upload an image for detection.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Real-Time Object Detection</h1>
+      <p class="lead">Powered by <strong>TensorFlow.js</strong> and <strong>COCO-SSD</strong>, this demo uses your webcam or uploaded images to detect objects in real-time.</p>
+    </div>
+  </section>
 
-    <!-- Buttons -->
-    <div class="mb-3">
-      <button class="btn btn-primary me-2" onclick="startWebcam()">Start Webcam</button>
-      <input type="file" id="imageUpload" class="form-control d-inline-block" style="max-width: 250px;" accept="image/*">
-      <button class="btn btn-danger ms-2" onclick="clearCanvas()">Clear</button>
+  <!-- Detection Card -->
+  <div class="container">
+    <div class="card-custom text-center mx-auto">
+      <h3 class="mb-3">Try It Out</h3>
+      <div class="mb-3">
+        <button class="btn btn-primary btn-custom me-2" onclick="startWebcam()">Start Webcam</button>
+        <input type="file" id="imageUpload" class="form-control d-inline-block" style="max-width: 250px;" accept="image/*">
+        <button class="btn btn-danger btn-custom ms-2" onclick="clearCanvas()">Clear</button>
+      </div>
+
+      <!-- Webcam Section -->
+      <div class="camera-container d-none" id="cameraContainer">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <!-- Uploaded Image Section -->
+      <div class="upload-container d-none" id="uploadContainer">
+        <img id="uploadedImage" alt="Uploaded Preview" class="img-fluid"/>
+        <canvas id="uploadCanvas"></canvas>
+      </div>
     </div>
 
-    <!-- Webcam Section -->
-    <div class="camera-container d-none" id="cameraContainer">
-      <video id="video" autoplay playsinline></video>
-      <canvas id="canvas"></canvas>
-    </div>
-
-    <!-- Uploaded Image Section -->
-    <div class="upload-container d-none mt-4" id="uploadContainer">
-      <img id="uploadedImage" alt="Uploaded Preview" class="img-fluid"/>
-      <canvas id="uploadCanvas"></canvas>
+    <!-- Project Info -->
+    <div class="mt-5 text-center">
+      <h4>About This Project</h4>
+      <p>This project demonstrates real-time object detection using <strong>TensorFlow.js</strong> and the <strong>COCO-SSD model</strong>.  
+      It runs entirely in the browser, without any backend server, making it lightweight and easy to deploy.  
+      <br><br>Technologies used: JavaScript, Bootstrap 5, TensorFlow.js, COCO-SSD.</p>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Eric Kumi | Data Analyst & ML Enthusiast
+  </footer>
 
   <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -148,8 +204,8 @@
         context.beginPath();
         context.rect(...pred.bbox);
         context.lineWidth = 2;
-        context.strokeStyle = "red";
-        context.fillStyle = "red";
+        context.strokeStyle = "lime";
+        context.fillStyle = "lime";
         context.stroke();
         context.fillText(pred.class + " (" + Math.round(pred.score * 100) + "%)", pred.bbox[0], pred.bbox[1] > 10 ? pred.bbox[1] - 5 : 10);
       });
