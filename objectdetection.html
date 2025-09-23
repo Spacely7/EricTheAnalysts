@@ -42,14 +42,12 @@
       color: white;
       text-align: center;
     }
-    /* Glassmorphism card */
     .glass {
       background: var(--secondary-bg);
       backdrop-filter: blur(10px);
       border-radius: 12px;
       padding: 20px;
     }
-    /* Animated gradient buttons */
     .btn-gradient {
       background: linear-gradient(270deg, #0d6efd, #6610f2, #20c997);
       background-size: 600% 600%;
@@ -62,14 +60,12 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    /* Contact form */
     .contact-form input, .contact-form textarea {
       border-radius: 8px;
     }
     .contact-form button {
       border-radius: 20px;
     }
-    /* Particle canvas */
     #particles {
       position: fixed;
       top: 0; left: 0;
@@ -192,11 +188,19 @@
       }
     });
 
-    // Detect Frame
+    // Detect Frame (fix: draw video first, then boxes)
     async function detectFrame() {
       const t0 = performance.now();
+
+      // Draw video frame first
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Predictions
       const predictions = await model.detect(video);
       renderPredictions(predictions);
+
       const t1 = performance.now();
       updateStats(t1 - t0);
       requestAnimationFrame(detectFrame);
@@ -215,9 +219,6 @@
     function renderPredictions(predictions) {
       const threshold = parseFloat(confidenceSlider.value);
       confValue.textContent = threshold.toFixed(2);
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       predictions.forEach(p => {
         if (p.score >= threshold) {
@@ -232,7 +233,7 @@
       });
     }
 
-    // Image upload detection
+    // Image upload detection (fix: draw image first, then boxes)
     detectImageBtn.addEventListener('click', () => {
       const file = uploadImage.files[0];
       if (!file) return alert("Upload an image first.");
@@ -242,8 +243,10 @@
         img.onload = () => {
           canvas.width = img.width;
           canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          model.detect(img).then(renderPredictions);
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          model.detect(img).then(predictions => {
+            renderPredictions(predictions);
+          });
         };
         img.src = reader.result;
       };
