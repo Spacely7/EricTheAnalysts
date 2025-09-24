@@ -482,10 +482,17 @@
     </div>
 
     <script>
-        let rawDataset = [];
+       let rawDataset = [];
         let processedTransactions = [];
         let analysisResults = {};
         let datasetStructure = {};
+        
+        // Store chart instances to destroy them when needed
+        let chartInstances = {
+            frequencyChart: null,
+            rulesChart: null,
+            crossSellChart: null
+        };
         
         // File handling
         document.getElementById('csvFile').addEventListener('change', handleFileUpload);
