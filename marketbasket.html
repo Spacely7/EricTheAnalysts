@@ -1,800 +1,196 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Market Basket Analysis</title>
-
-  <!-- Bootstrap 5 CSS (CDN) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Icons (Bootstrap icons) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-  <!-- Plotly for charts / network / heatmap -->
-  <script src="https://cdn.plot.ly/plotly-2.28.0.min.js"></script>
-
-  <!-- PapaParse for fast CSV parsing in browser -->
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse for CSV parsing -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <style>
-    /* Inline CSS: Keep visual style modern and minimalistic. Use Bootstrap for main layout. */
-    :root{
-      --accent: #4f46e5; /* indigo-600 */
-      --muted: #6b7280;  /* gray-500 */
-      --card-radius: 12px;
-      --shadow: 0 6px 20px rgba(18, 18, 18, 0.06);
-    }
     body {
-      background: linear-gradient(180deg,#fbfbff 0%, #f6f8ff 100%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      color: #0f172a;
-      padding-bottom: 4rem;
+      background-color: #f8f9fa;
     }
-    .app-header {
-      padding-top: 2rem;
-      padding-bottom: 1rem;
+    header {
+      background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
     }
-    .brand {
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: -0.02em;
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .card-modern {
-      border: 0;
-      border-radius: var(--card-radius);
-      box-shadow: var(--shadow);
-    }
-    .small-muted { color: var(--muted); font-size: .9rem; }
-    .file-card { min-height: 160px; display:flex; align-items:center; justify-content:center; }
-    .spinner-hidden { display:none; }
-    .table-fixed { max-height: 360px; overflow:auto; display:block; }
-    footer { margin-top: 3rem; text-align:center; color:var(--muted); font-size:.9rem; }
-    .badge-accent { background: linear-gradient(90deg,var(--accent), #7c3aed); color: white; }
-    pre { background: #0b1220; color: #e6eef8; padding: .75rem; border-radius: 8px; overflow:auto; }
-    @media (max-width: 767px){
-      .table-fixed { max-height: 240px; }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      text-align: center;
+      background: #212529;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <h1><i class="bi bi-cart4"></i> Market Basket Analysis</h1>
+    <p class="lead">Upload your transaction dataset and discover product associations</p>
+  </header>
 
-  <div class="container">
-    <!-- Header -->
-    <header class="d-flex align-items-center justify-content-between app-header">
-      <div>
-        <h1 class="h3 brand"><i class="bi bi-bar-chart-line-fill"></i> Market Basket Analysis</h1>
-        <div class="small-muted">Automated, in-browser analysis — Apriori, association rules, visuals & AOV uplift simulator</div>
-      </div>
-      <div class="text-end">
-        <span class="badge badge-accent px-3 py-2 rounded-pill">Portfolio-ready</span>
-        <div class="small-muted mt-1">Built with HTML, Bootstrap & JS</div>
-      </div>
-    </header>
-
-    <!-- Top controls -->
-    <div class="row g-4">
-      <div class="col-lg-4">
-        <div class="card card-modern p-3">
-          <div class="card-body">
-            <h5 class="card-title">1) Upload your data</h5>
-            <p class="small-muted">Supported: row-per-item (TransactionID, Product) or basket format (comma-separated items or multiple item columns)</p>
-
-            <div class="mb-3">
-              <label class="form-label">Transactions CSV</label>
-              <input id="csvFile" class="form-control" type="file" accept=".csv,text/csv" />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Optional: Prices CSV (Product, Price)</label>
-              <input id="priceFile" class="form-control" type="file" accept=".csv,text/csv" />
-            </div>
-
-            <hr/>
-
-            <div class="mb-2">
-              <label class="form-label">Apriori parameters</label>
-              <div class="d-flex gap-2">
-                <input id="minSupport" type="number" step="0.001" min="0.001" max="1" value="0.01" class="form-control" />
-                <input id="minConfidence" type="number" step="0.01" min="0.01" max="1" value="0.3" class="form-control" />
-              </div>
-              <div class="d-flex justify-content-between small-muted mt-1">
-                <div>Min support</div><div>Min confidence</div>
-              </div>
-            </div>
-
-            <div class="d-grid gap-2">
-              <button id="runBtn" class="btn btn-primary shadow-sm">Run analysis</button>
-              <button id="resetBtn" class="btn btn-outline-secondary">Reset / Clear</button>
-            </div>
-
-            <div id="status" class="mt-3 small-muted">No file uploaded yet.</div>
-          </div>
-        </div>
-
-        <!-- Uplift simulator card -->
-        <div class="card card-modern p-3 mt-4">
-          <div class="card-body">
-            <h6 class="card-title">AOV uplift simulator</h6>
-            <p class="small-muted">Simulates expected average order value uplift if recommended consequents were accepted with probability = rule confidence.</p>
-            <div class="mb-2">
-              <label class="form-label">Minimum rule confidence to include</label>
-              <input id="simConf" type="number" step="0.01" min="0.01" max="1" value="0.5" class="form-control" />
-            </div>
-            <div class="d-grid gap-2">
-              <button id="runSimBtn" class="btn btn-outline-primary">Run uplift simulation</button>
-            </div>
-
-            <div id="simResult" class="mt-3"></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Main visual area -->
-      <div class="col-lg-8">
-        <div class="card card-modern p-3">
-          <div class="card-body">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <h5 class="card-title mb-0">Analysis Dashboard</h5>
-              <div>
-                <button id="downloadRulesBtn" class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download rules</button>
-                <button id="copySummaryBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-clipboard"></i> Copy summary</button>
-              </div>
-            </div>
-
-            <!-- Data preview -->
-            <div class="mb-3">
-              <div class="small-muted mb-1">Data preview</div>
-              <div id="preview" class="table-responsive card p-2 file-card"></div>
-            </div>
-
-            <div class="row gy-3">
-              <div class="col-md-6">
-                <div>
-                  <div class="small-muted mb-1">Top items</div>
-                  <div id="topItemsChart" style="height:300px;"></div>
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <div>
-                  <div class="small-muted mb-1">Co-occurrence heatmap (top 20)</div>
-                  <div id="heatmapChart" style="height:300px;"></div>
-                </div>
-              </div>
-            </div>
-
-            <hr/>
-
-            <div class="mb-3">
-              <div class="small-muted mb-1">Association rules</div>
-              <div id="rulesTableContainer" class="table-fixed border rounded" style="padding:8px;">
-                <table id="rulesTable" class="table table-hover table-sm mb-0">
-                  <thead class="table-light sticky-top">
-                    <tr>
-                      <th>#</th>
-                      <th>Antecedent → Consequent</th>
-                      <th>Support</th>
-                      <th>Confidence</th>
-                      <th>Lift</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
-
-            <div>
-              <div class="small-muted mb-1">Rules network (top rules)</div>
-              <div id="networkChart" style="height:420px;"></div>
-            </div>
-
-          </div>
-        </div>
-      </div>
+  <div class="container my-5">
+    <!-- Upload Card -->
+    <div class="card p-4 mb-4">
+      <h4><i class="bi bi-upload"></i> Upload Dataset</h4>
+      <p class="text-muted">Upload a CSV file where each row represents a transaction and items are separated by commas.</p>
+      <input type="file" id="fileInput" accept=".csv" class="form-control" />
     </div>
 
-    <footer>
-      <div>Created by <strong>Eric Kumi</strong> — Market Basket Analysis demo • Save as <code>market_basket.html</code></div>
-      <small>Tip: For large datasets (>50k transactions) consider server-side processing (Flask / Node) and FP-Growth for speed.</small>
-    </footer>
+    <!-- Results -->
+    <div id="results" style="display:none;">
+      <!-- Frequent Itemsets -->
+      <div class="card p-4 mb-4">
+        <h4><i class="bi bi-diagram-3"></i> Frequent Itemsets</h4>
+        <table class="table table-striped" id="itemsetTable">
+          <thead>
+            <tr>
+              <th>Items</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Rules -->
+      <div class="card p-4 mb-4">
+        <h4><i class="bi bi-lightbulb"></i> Association Rules</h4>
+        <table class="table table-striped" id="rulesTable">
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Confidence</th>
+              <th>Lift</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Charts -->
+      <div class="card p-4">
+        <h4><i class="bi bi-bar-chart"></i> Top Products</h4>
+        <canvas id="topProductsChart"></canvas>
+      </div>
+    </div>
   </div>
 
-  <!-- JS: implement parsing, apriori, rule generation, UI wiring -->
+  <footer>
+    <p>Developed by Eric Kumi | Market Basket Analysis Portfolio Project</p>
+  </footer>
+
   <script>
-  /**************************************************************************
-   * Market Basket Analysis (client-side)
-   * Single-file app. Beginner-friendly comments inside.
-   *
-   * Main flow:
-   *  - User uploads CSV (transactions or basket)
-   *  - CSV parsed with PapaParse
-   *  - Format auto-detected
-   *  - Convert to list-of-baskets (array of arrays)
-   *  - Run Apriori to find frequent itemsets (support threshold)
-   *  - Generate association rules from frequent itemsets (confidence, lift)
-   *  - Visualize top items (bar), co-occurrence heatmap, rules table, network
-   *  - Optionally simulate AOV uplift (using price file or item counts)
-   **************************************************************************/
+    const minSupport = 0.2;   // 20%
+    const minConfidence = 0.6; // 60%
 
-  // ---------- Global state ----------
-  let rawData = null;         // parsed CSV rows (array of objects or arrays)
-  let headers = null;         // header row if present
-  let baskets = [];           // array of baskets: each basket is array of strings
-  let freqItemsets = [];      // [{items: Set, support: float, count: int}, ...]
-  let rules = [];             // [{antecedent:[], consequent:[], support, confidence, lift}]
-  let itemCounts = {};        // item->count
-  let priceLookup = null;     // optional item->price map if user provides
-  let currentParams = {minSupport: 0.01, minConfidence: 0.3};
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-  // ---------- Utility helpers ----------
-  function showStatus(msg, variant="muted"){
-    const el = document.getElementById('status');
-    el.innerHTML = msg;
-  }
-
-  function prettyList(arr){
-    return arr.join(', ');
-  }
-
-  function downloadText(filename, content){
-    const blob = new Blob([content], {type: 'text/csv;charset=utf-8;'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
-
-  // ---------- CSV parsing & format detection ----------
-  function parseCsvFile(file, callback){
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function(results){
-        rawData = results.data;
-        headers = results.meta.fields || null;
-        callback(null, rawData, headers);
-      },
-      error: function(err){ callback(err); }
-    });
-  }
-
-  // Detect format: 'row' (TransactionID & Product) or 'basket' (single column of comma-separated items or multiple item cols)
-  function detectFormat(parsedRows, headerFields){
-    if(!parsedRows || parsedRows.length === 0) return null;
-    if(headerFields){
-      const lower = headerFields.map(h => (h||"").toLowerCase());
-      const hasTransaction = lower.some(h => h.includes('transaction') || h.includes('order') || h.includes('basket') );
-      const hasProduct = lower.some(h => h.includes('product') || h.includes('item') || h.includes('sku') || h.includes('description'));
-      if(hasTransaction && hasProduct) return 'row';
-      // If single header probably comma-separated basket column
-      if(headerFields.length === 1) return 'basket_single';
-      // If multiple columns but many empty cells -> likely basket columns
-      // compute avg empty fraction
-      let empties = 0; let total = 0;
-      parsedRows.forEach(r => {
-        headerFields.forEach(h => { total++; if(!r[h] || String(r[h]).trim() === '') empties++; });
-      });
-      const frac = empties/total;
-      if(frac > 0.45) return 'basket_columns';
-    }
-    // fallback: if first row contains commas in first field => basket_single
-    const first = parsedRows[0];
-    const firstVal = Object.values(first)[0] || '';
-    if(String(firstVal).includes(',')) return 'basket_single';
-    return 'row'; // safe fallback
-  }
-
-  // Convert row-per-item to baskets
-  function rowsToBaskets(rows){
-    // heuristics: find transaction & product columns
-    const fields = Object.keys(rows[0]);
-    let trxCol = fields.find(f => f.toLowerCase().includes('transaction') || f.toLowerCase().includes('order') || f.toLowerCase().includes('basket'));
-    let prodCol = fields.find(f => f.toLowerCase().includes('product') || f.toLowerCase().includes('item') || f.toLowerCase().includes('sku') || f.toLowerCase().includes('description'));
-    if(!trxCol) trxCol = fields[0];
-    if(!prodCol) prodCol = fields.length>1 ? fields[1] : fields[0];
-
-    const groups = {};
-    rows.forEach(r => {
-      const t = String(r[trxCol]).trim();
-      const p = String(r[prodCol]||'').trim();
-      if(!t || !p) return;
-      if(!groups[t]) groups[t] = [];
-      groups[t].push(p);
-    });
-    return Object.values(groups);
-  }
-
-  // Convert single-col basket CSV to baskets
-  function singleColToBaskets(rows){
-    const field = Object.keys(rows[0])[0];
-    return rows.map(r => String(r[field] || '').split(',').map(s => s.trim()).filter(Boolean));
-  }
-
-  // Convert multi-column baskets (each column an item) to baskets array
-  function columnsToBaskets(rows){
-    const fields = Object.keys(rows[0]);
-    return rows.map(r => fields.map(f => String(r[f]||'').trim()).filter(Boolean));
-  }
-
-  // Normalize items (lowercase trim) and optional dedup per basket
-  function normalizeBaskets(rawBaskets){
-    const normalized = rawBaskets.map(b => {
-      // simple normalization: trim, collapse whitespace, uppercase/lowercase? we choose title-case for presentation but keep internal lowercase key
-      const cleaned = b.map(item => String(item).replace(/\s+/g,' ').trim()).filter(Boolean);
-      // deduplicate items inside single basket to avoid counting same item twice in one transaction
-      const seen = new Set();
-      const unique = [];
-      cleaned.forEach(it => {
-        const key = it.toLowerCase();
-        if(!seen.has(key)){
-          seen.add(key);
-          unique.push(it);
+      Papa.parse(file, {
+        complete: function (results) {
+          const data = results.data.filter(row => row.length > 0);
+          processTransactions(data);
         }
       });
-      return unique;
-    }).filter(b => b.length>0);
-    return normalized;
-  }
-
-  // ---------- Apriori algorithm (simple, in-browser) ----------
-  // This implementation is intentionally clear and not hyper-optimized. For large datasets use server-side FP-Growth.
-  function apriori(baskets, minSupport=0.01){
-    const N = baskets.length;
-    const minsupCount = Math.ceil(minSupport * N);
-    // 1. count single items
-    const itemCount = {};
-    baskets.forEach(b => {
-      b.forEach(it => {
-        const key = it; // already normalized (case preserved)
-        itemCount[key] = (itemCount[key]||0) + 1;
-      });
     });
 
-    // Frequent 1-itemsets
-    const L1 = [];
-    for(const [item, cnt] of Object.entries(itemCount)){
-      if(cnt >= minsupCount) L1.push({items: [item], count: cnt, support: cnt/N});
-    }
-    L1.sort((a,b)=>b.count-a.count);
+    function processTransactions(data) {
+      const transactions = data.map(row => row[0].split(",").map(item => item.trim()));
+      const itemCounts = {};
+      const totalTransactions = transactions.length;
 
-    let L = L1.slice();
-    const allFrequent = L1.map(x => ({items: new Set(x.items), count: x.count, support: x.support}));
-
-    let k = 2;
-    let prevL = L1.map(x => x.items.map(y=>y)); // array of arrays of items
-
-    while(prevL.length > 0){
-      // generate candidate k-itemsets by joining previous (k-1)-itemsets
-      const candidates = {};
-      for(let i=0;i<prevL.length;i++){
-        for(let j=i+1;j<prevL.length;j++){
-          const a = prevL[i].slice().sort();
-          const b = prevL[j].slice().sort();
-          // join if first k-2 items equal
-          if(k===2 || a.slice(0,k-2).join('|') === b.slice(0,k-2).join('|')){
-            const cand = Array.from(new Set([...a, ...b])).sort();
-            if(cand.length === k){
-              candidates[cand.join('|')] = cand;
-            }
-          }
-        }
-      }
-      // count support for each candidate
-      const candCounts = {};
-      const candList = Object.values(candidates);
-      if(candList.length === 0) break;
-      baskets.forEach(basket => {
-        const bs = new Set(basket);
-        candList.forEach(cand => {
-          const ok = cand.every(it => bs.has(it));
-          if(ok) candCounts[cand.join('|')] = (candCounts[cand.join('|')]||0) + 1;
+      // Count single items
+      transactions.forEach(t => {
+        new Set(t).forEach(item => {
+          itemCounts[item] = (itemCounts[item] || 0) + 1;
         });
       });
 
-      // filter by minsupCount
-      const Lk = [];
-      for(const [key, cnt] of Object.entries(candCounts)){
-        if(cnt >= minsupCount){
-          const items = key.split('|');
-          const support = cnt / N;
-          Lk.push({items: items, count: cnt, support: support});
-          allFrequent.push({items: new Set(items), count: cnt, support: support});
+      // Frequent 1-itemsets
+      const freqItemsets = Object.entries(itemCounts)
+        .map(([item, count]) => ({ items: [item], support: count / totalTransactions }))
+        .filter(d => d.support >= minSupport);
+
+      // Simple rules (pairwise)
+      const rules = [];
+      for (let t of transactions) {
+        const uniqueItems = [...new Set(t)];
+        for (let i = 0; i < uniqueItems.length; i++) {
+          for (let j = i+1; j < uniqueItems.length; j++) {
+            const A = uniqueItems[i], B = uniqueItems[j];
+            const supportAB = transactions.filter(x => x.includes(A) && x.includes(B)).length / totalTransactions;
+            const supportA = itemCounts[A] / totalTransactions;
+            const supportB = itemCounts[B] / totalTransactions;
+            const confAB = supportAB / supportA;
+            const confBA = supportAB / supportB;
+            const lift = supportAB / (supportA * supportB);
+
+            if (confAB >= minConfidence) rules.push({ rule: `${A} → ${B}`, conf: confAB, lift });
+            if (confBA >= minConfidence) rules.push({ rule: `${B} → ${A}`, conf: confBA, lift });
+          }
         }
       }
-      if(Lk.length === 0) break;
-      prevL = Lk.map(x=>x.items);
-      k += 1;
+
+      displayResults(freqItemsets, rules, itemCounts, totalTransactions);
     }
 
-    // sort frequent itemsets by support descending then size descending
-    allFrequent.sort((a,b) => {
-      if(b.support !== a.support) return b.support - a.support;
-      return b.items.size - a.items.size;
-    });
-    return allFrequent;
-  }
+    function displayResults(freqItemsets, rules, itemCounts, total) {
+      document.getElementById("results").style.display = "block";
 
-  // ---------- Generate association rules from frequent itemsets ----------
-  // For each frequent itemset of size >=2, consider all non-empty antecedent subsets and create rules.
-  function generateRules(frequentItemsets, baskets, minConfidence=0.3){
-    // build map from itemset key to support
-    const N = baskets.length;
-    const supportMap = new Map();
-    frequentItemsets.forEach(fi => {
-      const key = [...fi.items].sort().join('|');
-      supportMap.set(key, fi.support);
-    });
+      // Frequent Itemsets
+      const itemsetTable = document.querySelector("#itemsetTable tbody");
+      itemsetTable.innerHTML = "";
+      freqItemsets.forEach(d => {
+        const row = `<tr><td>${d.items.join(", ")}</td><td>${(d.support*100).toFixed(2)}%</td></tr>`;
+        itemsetTable.innerHTML += row;
+      });
 
-    const rules = [];
-    // Only consider sets with size >=2
-    frequentItemsets.forEach(fi => {
-      const items = [...fi.items];
-      if(items.length < 2) return;
-      // generate all non-empty proper subsets as antecedents
-      const subsets = getAllNonEmptyProperSubsets(items);
-      subsets.forEach(ant => {
-        const cons = items.filter(i => !ant.includes(i));
-        const antKey = ant.slice().sort().join('|');
-        const consKey = cons.slice().sort().join('|');
-        const setKey = items.slice().sort().join('|');
-        const supportSet = supportMap.get(setKey) || 0;
-        const supportAnt = supportMap.get(antKey) || 0;
-        // confidence = support(set) / support(ant)
-        if(supportAnt > 0){
-          const confidence = supportSet / supportAnt;
-          if(confidence >= minConfidence){
-            // lift = confidence / support(consequent)
-            const supportCons = supportMap.get(consKey) || 0;
-            const lift = supportCons > 0 ? confidence / supportCons : Infinity;
-            rules.push({
-              antecedent: ant.slice(),
-              consequent: cons.slice(),
-              support: supportSet,
-              confidence: confidence,
-              lift: lift
-            });
+      // Rules
+      const rulesTable = document.querySelector("#rulesTable tbody");
+      rulesTable.innerHTML = "";
+      rules.forEach(r => {
+        const row = `<tr><td>${r.rule}</td><td>${(r.conf*100).toFixed(2)}%</td><td>${r.lift.toFixed(2)}</td></tr>`;
+        rulesTable.innerHTML += row;
+      });
+
+      // Top Products Chart
+      const sorted = Object.entries(itemCounts).sort((a,b) => b[1]-a[1]).slice(0,10);
+      const labels = sorted.map(d => d[0]);
+      const values = sorted.map(d => d[1]);
+
+      new Chart(document.getElementById("topProductsChart"), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Frequency",
+            data: values,
+            backgroundColor: "rgba(13, 110, 253, 0.7)"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
           }
         }
       });
-    });
-
-    // sort by lift then confidence
-    rules.sort((a,b) => {
-      if(b.lift !== a.lift) return b.lift - a.lift;
-      return b.confidence - a.confidence;
-    });
-    return rules;
-  }
-
-  // helper: all non-empty proper subsets
-  function getAllNonEmptyProperSubsets(arr){
-    const results = [];
-    const n = arr.length;
-    // bitmask from 1 to 2^n - 2 (exclude empty and full)
-    const max = Math.pow(2,n);
-    for(let mask=1; mask<max-1; mask++){
-      const subset = [];
-      for(let i=0;i<n;i++) if(mask & (1<<i)) subset.push(arr[i]);
-      results.push(subset);
     }
-    return results;
-  }
-
-  // ---------- Visualizations (Plotly) ----------
-  function renderTopItemsChart(itemCountsObj, limit=20){
-    const items = Object.entries(itemCountsObj).sort((a,b)=>b[1]-a[1]).slice(0,limit);
-    const labels = items.map(i=>i[0]);
-    const counts = items.map(i=>i[1]);
-    const trace = { x: counts.reverse(), y: labels.reverse(), type: 'bar', orientation: 'h' };
-    const layout = { margin: {l:160, r:20, t:20, b:20}, height: 300 };
-    Plotly.newPlot('topItemsChart', [trace], layout, {responsive:true});
-  }
-
-  function renderHeatmap(baskets, topItems){
-    // compute co-occurrence counts matrix among topItems
-    const m = topItems.length;
-    const matrix = Array.from({length:m}, ()=>Array(m).fill(0));
-    const idx = Object.fromEntries(topItems.map((it,i)=>[it,i]));
-    baskets.forEach(b => {
-      const setb = new Set(b);
-      topItems.forEach((it,i) => {
-        if(!setb.has(it)) return;
-        topItems.forEach((jt,j) => {
-          if(setb.has(jt)) matrix[i][j] += 1;
-        });
-      });
-    });
-    const data = [{
-      z: matrix,
-      x: topItems,
-      y: topItems,
-      type: 'heatmap',
-      colorscale: 'Blues',
-      hoverongaps: false
-    }];
-    const layout = { margin: {l:120, r:20, t:30, b:120}, height: 300 };
-    Plotly.newPlot('heatmapChart', data, layout, {responsive:true});
-  }
-
-  function renderNetwork(rulesToPlot, maxNodes=40){
-    if(rulesToPlot.length === 0){
-      document.getElementById('networkChart').innerHTML = '<div class="small-muted p-3">No rules to display. Try lowering thresholds.</div>';
-      return;
-    }
-    // create nodes map
-    const nodes = [];
-    const nodeIndex = {};
-    const edges = [];
-    let idx = 0;
-    // only take top rulesToPlot length
-    rulesToPlot.slice(0,80).forEach(r => {
-      const aLabel = r.antecedent.join(', ');
-      const cLabel = r.consequent.join(', ');
-      if(nodeIndex[aLabel] === undefined){ nodeIndex[aLabel]=idx++; nodes.push({label:aLabel}); }
-      if(nodeIndex[cLabel] === undefined){ nodeIndex[cLabel]=idx++; nodes.push({label:cLabel}); }
-      edges.push({
-        from: nodeIndex[aLabel],
-        to: nodeIndex[cLabel],
-        weight: r.confidence,
-        lift: r.lift
-      });
-    });
-
-    // simple force-directed layout via Plotly scatter lines
-    // compute random positions with slight jitter for nodes
-    const N = nodes.length;
-    // generate positions using circle layout for readability (client-side)
-    const angles = nodes.map((n,i)=> 2*Math.PI * i / N );
-    const radius = Math.min(200, 60 + N*2);
-    const positions = nodes.map((n,i) => {
-      const a = angles[i];
-      return {x: radius*Math.cos(a)*(0.9 + Math.random()*0.2), y: radius*Math.sin(a)*(0.9 + Math.random()*0.2)};
-    });
-
-    // build edge lines
-    const edgeX = [], edgeY = [], edgeWidths = [];
-    edges.forEach(e => {
-      const p0 = positions[e.from]; const p1 = positions[e.to];
-      edgeX.push(p0.x); edgeX.push(p1.x); edgeX.push(null);
-      edgeY.push(p0.y); edgeY.push(p1.y); edgeY.push(null);
-      edgeWidths.push(1 + e.weight*3);
-    });
-    const edgeTrace = { x: edgeX, y: edgeY, mode: 'lines', line:{color:'#888', width:1}, hoverinfo:'none', type:'scatter' };
-
-    // node trace
-    const nodeX = positions.map(p=>p.x);
-    const nodeY = positions.map(p=>p.y);
-    const labelText = nodes.map(n => n.label);
-    const nodeTrace = {
-      x: nodeX, y: nodeY, mode:'markers+text', text: labelText,
-      textposition:'bottom center', hoverinfo:'text', marker:{size:20, color:'#4f46e5'}, type:'scatter'
-    };
-
-    const layout = { showlegend:false, margin:{l:10,r:10,t:10,b:10}, height:420 };
-    Plotly.newPlot('networkChart', [edgeTrace, nodeTrace], layout, {responsive:true});
-  }
-
-  // ---------- Table rendering ----------
-  function populatePreviewTable(rows, limit=5){
-    const container = document.getElementById('preview');
-    if(!rows || rows.length === 0){
-      container.innerHTML = '<div class="small-muted">No data preview available.</div>';
-      return;
-    }
-    const fields = Object.keys(rows[0]);
-    const sample = rows.slice(0,limit);
-    let html = '<div class="table-responsive"><table class="table table-sm"><thead class="table-light"><tr>';
-    fields.forEach(f=> html += `<th>${f}</th>`);
-    html += '</tr></thead><tbody>';
-    sample.forEach(r=>{
-      html += '<tr>';
-      fields.forEach(f => html += `<td>${String(r[f]||'')}</td>`);
-      html += '</tr>';
-    });
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
-  }
-
-  function populateRulesTable(rulesToShow){
-    const tbody = document.querySelector('#rulesTable tbody');
-    tbody.innerHTML = '';
-    rulesToShow.forEach((r, i) => {
-      const tr = document.createElement('tr');
-      const cellIndex = `<td>${i+1}</td>`;
-      const desc = `<td><strong>${r.antecedent.join(', ')}</strong> → <em>${r.consequent.join(', ')}</em></td>`;
-      const support = `<td>${(r.support*100).toFixed(2)}%</td>`;
-      const conf = `<td>${(r.confidence*100).toFixed(2)}%</td>`;
-      const lift = `<td>${r.lift.toFixed(3)}</td>`;
-      tr.innerHTML = cellIndex + desc + support + conf + lift;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // ---------- AOV uplift simulation ----------
-  function simulateAOV(baskets, rulesList, minConf=0.5, priceLookupMap=null){
-    // For each basket: baseline = sum(price) or count
-    // If any rule antecedent subset of basket, expected added items = sum(confidence * price_or_count_of_consequents_not_in_basket)
-    const applicableRules = rulesList.filter(r => r.confidence >= minConf);
-    if(applicableRules.length === 0) return null;
-    const baselineVals = [];
-    const newVals = [];
-    baskets.forEach(b => {
-      const bset = new Set(b);
-      const baseline = priceLookupMap ? b.reduce((s,it)=> s + (priceLookupMap[it]||0), 0) : b.length;
-      let addedExpected = 0;
-      applicableRules.forEach(r => {
-        const antset = new Set(r.antecedent);
-        // antecedent subset?
-        const allIn = [...antset].every(x => bset.has(x));
-        if(allIn){
-          // add expected value for consequents not already present
-          const newItems = r.consequent.filter(it => !bset.has(it));
-          if(newItems.length === 0) return;
-          if(priceLookupMap){
-            const val = newItems.reduce((s,it) => s + (priceLookupMap[it]||0), 0);
-            addedExpected += r.confidence * val;
-          } else {
-            addedExpected += r.confidence * newItems.length;
-          }
-        }
-      });
-      baselineVals.push(baseline);
-      newVals.push(baseline + addedExpected);
-    });
-    const baselineAOV = baselineVals.reduce((s,v)=>s+v,0)/baselineVals.length;
-    const newAOV = newVals.reduce((s,v)=>s+v,0)/newVals.length;
-    const pct = baselineAOV>0 ? (newAOV - baselineAOV) / baselineAOV * 100 : null;
-    return {baseline: baselineAOV, newAOV: newAOV, pct: pct};
-  }
-
-  // ---------- Wire UI events ----------
-  document.getElementById('resetBtn').addEventListener('click', ()=>{
-    rawData = null; headers = null; baskets = []; freqItemsets = []; rules = []; itemCounts = {}; priceLookup = null;
-    document.getElementById('csvFile').value = '';
-    document.getElementById('priceFile').value = '';
-    document.getElementById('preview').innerHTML = '';
-    document.getElementById('topItemsChart').innerHTML = '';
-    document.getElementById('heatmapChart').innerHTML = '';
-    document.getElementById('networkChart').innerHTML = '';
-    document.querySelector('#rulesTable tbody').innerHTML = '';
-    document.getElementById('simResult').innerHTML = '';
-    showStatus('Cleared. Upload a new CSV to begin.');
-  });
-
-  document.getElementById('csvFile').addEventListener('change', (e)=>{
-    const f = e.target.files[0];
-    if(!f) return;
-    showStatus('Parsing CSV...');
-    parseCsvFile(f, (err, rows, hdrs)=>{
-      if(err){ showStatus('Error parsing file.'); console.error(err); return; }
-      rawData = rows; headers = hdrs;
-      populatePreviewTable(rawData, 5);
-      showStatus(`Parsed ${rows.length} rows. Detected headers: ${hdrs ? hdrs.join(', ') : 'none'}.`);
-    });
-  });
-
-  document.getElementById('priceFile').addEventListener('change', (e)=>{
-    const f = e.target.files[0];
-    if(!f) return;
-    Papa.parse(f, {header:true, skipEmptyLines:true, complete: function(results){
-      const rows = results.data;
-      if(rows.length === 0) { alert('Price file empty'); return; }
-      // try to detect product & price columns
-      const fields = Object.keys(rows[0]);
-      const prod = fields.find(f => f.toLowerCase().includes('product') || f.toLowerCase().includes('item') || f.toLowerCase().includes('sku')) || fields[0];
-      const pr = fields.find(f => f.toLowerCase().includes('price') || f.toLowerCase().includes('amount') || f.toLowerCase().includes('unit')) || fields[1] || fields[0];
-      const map = {};
-      rows.forEach(r => {
-        const p = String(r[prod] || '').trim();
-        const v = parseFloat(String(r[pr] || '').replace(/[^0-9\.\-]+/g,'')) || 0;
-        if(p) map[p] = v;
-      });
-      priceLookup = map;
-      showStatus(`Loaded prices for ${Object.keys(map).length} products (column heuristics: ${prod} / ${pr}).`);
-    }});
-  });
-
-  document.getElementById('runBtn').addEventListener('click', ()=>{
-    // validate
-    if(!rawData || rawData.length === 0){ alert('Upload a transaction CSV first.'); return; }
-    currentParams.minSupport = parseFloat(document.getElementById('minSupport').value) || 0.01;
-    currentParams.minConfidence = parseFloat(document.getElementById('minConfidence').value) || 0.3;
-    showStatus('Preparing baskets...');
-    // detect format and create baskets
-    const fmt = detectFormat(rawData, headers);
-    let rawBaskets = [];
-    if(fmt === 'row'){
-      rawBaskets = rowsToBaskets(rawData);
-    } else if(fmt === 'basket_single'){
-      rawBaskets = singleColToBaskets(rawData);
-    } else {
-      rawBaskets = columnsToBaskets(rawData);
-    }
-    baskets = normalizeBaskets(rawBaskets);
-    if(baskets.length === 0){ alert('No baskets detected after parsing. Check file format.'); return; }
-    showStatus(`Detected ${baskets.length} transactions. Running Apriori (support=${currentParams.minSupport})...`);
-    // compute item counts
-    itemCounts = {};
-    baskets.forEach(b => b.forEach(it => itemCounts[it] = (itemCounts[it]||0) + 1));
-
-    // run Apriori (may be slow for very large sets)
-    setTimeout(()=>{ // allow UI to update
-      try{
-        freqItemsets = apriori(baskets, currentParams.minSupport);
-        showStatus(`Found ${freqItemsets.length} frequent itemsets. Generating rules (min confidence=${currentParams.minConfidence})...`);
-        rules = generateRules(freqItemsets, baskets, currentParams.minConfidence);
-        showStatus(`Generated ${rules.length} rules. Rendering visuals...`);
-        // Visuals
-        renderTopItemsChart(itemCounts, 20);
-        const topItems = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]).slice(0,20).map(a=>a[0]);
-        renderHeatmap(baskets, topItems);
-        populateRulesTable(rules);
-        renderNetwork(rules);
-        document.getElementById('simResult').innerHTML = '';
-        // prepare CSV of rules for download
-        prepareRulesCSV(rules);
-      } catch(e){
-        console.error(e);
-        alert('Error running analysis: ' + e.message);
-      }
-    }, 40);
-  });
-
-  document.getElementById('runSimBtn').addEventListener('click', ()=>{
-    if(!rules || rules.length === 0){ alert('No rules available. Run analysis first.'); return; }
-    const conf = parseFloat(document.getElementById('simConf').value) || 0.5;
-    const res = simulateAOV(baskets, rules, conf, priceLookup);
-    const container = document.getElementById('simResult');
-    if(!res){ container.innerHTML = '<div class="small-muted">No applicable rules at that confidence threshold.</div>'; return; }
-    const baselineStr = priceLookup ? `${res.baseline.toFixed(2)} (currency)` : `${res.baseline.toFixed(2)} items`;
-    const newStr = priceLookup ? `${res.newAOV.toFixed(2)} (currency)` : `${res.newAOV.toFixed(2)} items`;
-    const pctStr = res.pct !== null ? `${res.pct.toFixed(2)}%` : 'N/A';
-    container.innerHTML = `<div class="mt-2"><strong>Baseline AOV:</strong> ${baselineStr} • <strong>Estimated AOV after cross-sell:</strong> ${newStr} • <strong>Estimated uplift:</strong> ${pctStr}</div>`;
-  });
-
-  // Download rules CSV
-  function prepareRulesCSV(rulesList){
-    if(!rulesList || rulesList.length===0) {
-      document.getElementById('downloadRulesBtn').disabled = true;
-      return;
-    }
-    const rows = rulesList.map(r => ({
-      antecedent: r.antecedent.join(', '),
-      consequent: r.consequent.join(', '),
-      support: r.support,
-      confidence: r.confidence,
-      lift: r.lift
-    }));
-    const header = ['antecedent','consequent','support','confidence','lift'];
-    const csv = [header.join(',')].concat(rows.map(r => `${quoteCsv(r.antecedent)},${quoteCsv(r.consequent)},${r.support},${r.confidence},${r.lift}`)).join('\n');
-    // attach event
-    document.getElementById('downloadRulesBtn').onclick = () => { downloadText('association_rules.csv', csv); };
-    document.getElementById('downloadRulesBtn').disabled = false;
-  }
-  function quoteCsv(s){ return `"${String(s).replace(/"/g,'""')}"`; }
-
-  // copy summary (useful for README text snippet)
-  document.getElementById('copySummaryBtn').addEventListener('click', ()=>{
-    const top = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]).join(', ');
-    const summary = `Market Basket Analysis — ${baskets.length} transactions • Top items: ${top} • ${rules.length} association rules found (support=${currentParams.minSupport}, confidence=${currentParams.minConfidence}).`;
-    navigator.clipboard.writeText(summary).then(()=> alert('Summary copied to clipboard.'));
-  });
-
-  // utility: wrap items with quotes for CSV fields if needed
-  function makeCSVFromArray(arr){
-    return arr.map(r=> r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  }
-
-  // initial UI state
-  showStatus('Ready — upload a transactions CSV to get started.');
-
   </script>
-
-  <!-- Bootstrap JS (popper + bundle) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
