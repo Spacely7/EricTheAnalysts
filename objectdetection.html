@@ -3,226 +3,871 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Object Detection | Eric Kumi</title>
+  <title>AI Object Detection | Eric Kumi</title>
   
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- TensorFlow.js + COCO-SSD -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #10b981;
+      --accent: #f59e0b;
+      --bg-primary: #0f0f23;
+      --bg-secondary: #1a1a2e;
+      --bg-card: #16213e;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --border: #374151;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #121212;
-      color: #f8f9fa;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
-    h1, h2, h3 {
-      font-weight: 600;
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #0f0f23, #1a1a2e, #16213e, #0f0f23);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
     }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navigation */
     .navbar {
-      background: #1f1f1f !important;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 0;
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 1000;
+      transition: all 0.3s ease;
     }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    /* Hero Section */
     .hero {
-      padding: 4rem 1rem;
+      margin-top: 100px;
+      padding: 4rem 2rem;
       text-align: center;
+      position: relative;
     }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
     .hero h1 {
-      font-size: 2.5rem;
-      color: #0d6efd;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease;
     }
-    .card-custom {
-      background: #1e1e1e;
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Detection Card */
+    .detection-card {
+      background: rgba(22, 33, 62, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem;
+      margin: 2rem 0;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: slideInUp 0.8s ease 0.4s both;
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card-header h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .card-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      padding: 12px 24px;
       border: none;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      padding: 2rem;
-    }
-    .btn-custom {
-      border-radius: 30px;
-      padding: 10px 20px;
+      border-radius: 12px;
       font-weight: 500;
-      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .btn-custom:hover {
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
       transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(13,110,253,0.5);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
     }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .file-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    /* Media Display */
+    .media-container {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .media-container.hidden {
+      display: none;
+    }
+
     video, canvas, img {
       width: 100%;
-      max-width: 700px;
-      border-radius: 12px;
-      margin-top: 15px;
+      height: auto;
+      display: block;
+      border-radius: 16px;
     }
-    footer {
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Status Messages */
+    .status-message {
+      text-align: center;
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      font-weight: 500;
+      animation: slideInDown 0.3s ease;
+    }
+
+    .status-success {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-info {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* Detection Info */
+    .detection-info {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      display: none;
+    }
+
+    .detection-info.show {
+      display: block;
+      animation: slideInUp 0.3s ease;
+    }
+
+    .detection-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* Project Info */
+    .project-info {
+      margin-top: 4rem;
+      padding: 3rem;
+      background: rgba(22, 33, 62, 0.4);
+      border-radius: 24px;
+      text-align: center;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    .project-info h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .tech-badge {
+      padding: 8px 16px;
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* Footer */
+    .footer {
       margin-top: 4rem;
       padding: 2rem;
-      background: #1f1f1f;
       text-align: center;
-      color: #aaa;
-      font-size: 0.9rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+      background: rgba(22, 33, 62, 0.3);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 2rem 1rem;
+      }
+
+      .detection-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .controls .btn,
+      .file-input-wrapper {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">Eric Kumi</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
-          <li class="nav-item"><a class="nav-link active" href="object-detection.html">Object Detection</a></li>
-          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        </ul>
-      </div>
+  <div class="bg-animation"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Eric Kumi</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="#" class="active">AI Detection</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="hero">
-    <div class="container">
-      <h1>Real-Time Object Detection</h1>
-      <p class="lead">Powered by <strong>TensorFlow.js</strong> and <strong>COCO-SSD</strong>, this demo uses your webcam or uploaded images to detect objects in real-time.</p>
+    <div class="hero-content">
+      <h1>AI-Powered Object Detection</h1>
+      <p>Experience real-time object detection powered by TensorFlow.js and COCO-SSD. Upload an image or use your webcam to detect and identify objects with cutting-edge machine learning.</p>
     </div>
   </section>
 
-  <!-- Detection Card -->
+  <!-- Main Container -->
   <div class="container">
-    <div class="card-custom text-center mx-auto">
-      <h3 class="mb-3">Try It Out</h3>
-      <div class="mb-3">
-        <button class="btn btn-primary btn-custom me-2" onclick="startWebcam()">Start Webcam</button>
-        <input type="file" id="imageUpload" class="form-control d-inline-block" style="max-width: 250px;" accept="image/*">
-        <button class="btn btn-danger btn-custom ms-2" onclick="clearCanvas()">Clear</button>
+    <!-- Detection Card -->
+    <div class="detection-card">
+      <div class="card-header">
+        <h2><i class="fas fa-eye"></i> Try It Live</h2>
+        <p>Choose your input method and watch AI identify objects in real-time</p>
       </div>
 
-      <!-- Webcam Section -->
-      <div class="camera-container d-none" id="cameraContainer">
-        <video id="video" autoplay playsinline></video>
+      <!-- Status Message -->
+      <div id="statusMessage" class="status-message hidden"></div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p>Loading AI model...</p>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls" id="controls" style="display: none;">
+        <button class="btn btn-primary" onclick="startWebcam()">
+          <i class="fas fa-video"></i> Start Camera
+        </button>
+        
+        <div class="file-input-wrapper">
+          <button class="btn btn-success">
+            <i class="fas fa-upload"></i> Upload Image
+          </button>
+          <input type="file" id="imageUpload" class="file-input" accept="image/*">
+        </div>
+        
+        <button class="btn btn-danger" onclick="clearAll()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+
+      <!-- Media Containers -->
+      <div id="cameraContainer" class="media-container hidden">
+        <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>
       </div>
 
-      <!-- Uploaded Image Section -->
-      <div class="upload-container d-none" id="uploadContainer">
-        <img id="uploadedImage" alt="Uploaded Preview" class="img-fluid"/>
+      <div id="uploadContainer" class="media-container hidden">
+        <img id="uploadedImage" alt="Uploaded image for detection"/>
         <canvas id="uploadCanvas"></canvas>
+      </div>
+
+      <!-- Detection Info -->
+      <div id="detectionInfo" class="detection-info">
+        <h4><i class="fas fa-chart-bar"></i> Detection Results</h4>
+        <div class="detection-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="objectCount">0</div>
+            <div class="stat-label">Objects Found</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="avgConfidence">0%</div>
+            <div class="stat-label">Avg Confidence</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="processingTime">0ms</div>
+            <div class="stat-label">Processing Time</div>
+          </div>
+        </div>
+        <div id="detectedObjects" style="margin-top: 1rem;"></div>
       </div>
     </div>
 
     <!-- Project Info -->
-    <div class="mt-5 text-center">
-      <h4>About This Project</h4>
-      <p>This project demonstrates real-time object detection using <strong>TensorFlow.js</strong> and the <strong>COCO-SSD model</strong>.  
-      It runs entirely in the browser, without any backend server, making it lightweight and easy to deploy.  
-      <br><br>Technologies used: JavaScript, Bootstrap 5, TensorFlow.js, COCO-SSD.</p>
+    <div class="project-info">
+      <h3><i class="fas fa-cogs"></i> About This Project</h3>
+      <p>This advanced object detection demo runs entirely in your browser using cutting-edge machine learning technologies. No data is sent to servers - everything processes locally for maximum privacy and speed.</p>
+      
+      <div class="tech-stack">
+        <span class="tech-badge">TensorFlow.js</span>
+        <span class="tech-badge">COCO-SSD Model</span>
+        <span class="tech-badge">WebRTC</span>
+        <span class="tech-badge">Canvas API</span>
+        <span class="tech-badge">ES6+</span>
+        <span class="tech-badge">Responsive Design</span>
+      </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer>
-    © 2025 Eric Kumi | Data Analyst & ML Enthusiast
+  <footer class="footer">
+    <p>&copy; 2025 Eric Kumi | Data Analyst & ML Enthusiast | Built with ❤️ and AI</p>
   </footer>
 
-  <!-- Bootstrap Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- Object Detection Script -->
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const uploadCanvas = document.getElementById('uploadCanvas');
-    const uploadCtx = uploadCanvas.getContext('2d');
-    const uploadedImage = document.getElementById('uploadedImage');
-    let model, stream;
-
-    async function loadModel() {
-      model = await cocoSsd.load();
-    }
-    loadModel();
-
-    // Start Webcam
-    async function startWebcam() {
-      document.getElementById('cameraContainer').classList.remove('d-none');
-      document.getElementById('uploadContainer').classList.add('d-none');
-
-      stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      video.srcObject = stream;
-
-      video.onloadedmetadata = () => {
-        video.play();
-        detectWebcamFrame();
-      };
-    }
-
-    async function detectWebcamFrame() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const predictions = await model.detect(video);
-      drawPredictions(predictions, ctx);
-      requestAnimationFrame(detectWebcamFrame);
-    }
-
-    // Handle Image Upload
-    document.getElementById('imageUpload').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedImage.src = e.target.result;
-        uploadedImage.onload = async () => {
-          document.getElementById('uploadContainer').classList.remove('d-none');
-          document.getElementById('cameraContainer').classList.add('d-none');
-
-          uploadCanvas.width = uploadedImage.width;
-          uploadCanvas.height = uploadedImage.height;
-          uploadCtx.clearRect(0, 0, uploadCanvas.width, uploadCanvas.height);
-
-          const predictions = await model.detect(uploadedImage);
-          drawPredictions(predictions, uploadCtx);
+    class ObjectDetector {
+      constructor() {
+        this.video = document.getElementById('video');
+        this.canvas = document.getElementById('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.uploadCanvas = document.getElementById('uploadCanvas');
+        this.uploadCtx = this.uploadCanvas.getContext('2d');
+        this.uploadedImage = document.getElementById('uploadedImage');
+        this.model = null;
+        this.stream = null;
+        this.isDetecting = false;
+        this.detectionStats = {
+          objectCount: 0,
+          avgConfidence: 0,
+          processingTime: 0
         };
-      };
-      reader.readAsDataURL(file);
+        
+        this.init();
+      }
+
+      async init() {
+        try {
+          await this.loadModel();
+          this.setupEventListeners();
+          this.showControls();
+        } catch (error) {
+          this.showStatus('Failed to load AI model. Please refresh the page.', 'error');
+        }
+      }
+
+      async loadModel() {
+        try {
+          this.model = await cocoSsd.load();
+          this.showStatus('AI model loaded successfully!', 'success');
+          setTimeout(() => this.hideStatus(), 2000);
+        } catch (error) {
+          throw new Error('Model loading failed');
+        }
+      }
+
+      setupEventListeners() {
+        document.getElementById('imageUpload').addEventListener('change', (e) => this.handleImageUpload(e));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+              case 'u': case 'U':
+                e.preventDefault();
+                document.getElementById('imageUpload').click();
+                break;
+              case 'c': case 'C':
+                e.preventDefault();
+                if (!this.stream) this.startWebcam();
+                break;
+              case 'x': case 'X':
+                e.preventDefault();
+                this.clearAll();
+                break;
+            }
+          }
+        });
+      }
+
+      showControls() {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('controls').style.display = 'flex';
+      }
+
+      showStatus(message, type = 'info') {
+        const statusEl = document.getElementById('statusMessage');
+        statusEl.textContent = message;
+        statusEl.className = `status-message status-${type}`;
+        statusEl.style.display = 'block';
+      }
+
+      hideStatus() {
+        const statusEl = document.getElementById('statusMessage');
+        statusEl.style.display = 'none';
+      }
+
+      async startWebcam() {
+        try {
+          this.showStatus('Starting camera...', 'info');
+          
+          document.getElementById('cameraContainer').classList.remove('hidden');
+          document.getElementById('uploadContainer').classList.add('hidden');
+
+          this.stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            } 
+          });
+          
+          this.video.srcObject = this.stream;
+          
+          this.video.onloadedmetadata = () => {
+            this.video.play();
+            this.isDetecting = true;
+            this.detectWebcamFrame();
+            this.showStatus('Camera active - detecting objects...', 'success');
+            setTimeout(() => this.hideStatus(), 2000);
+          };
+        } catch (error) {
+          this.showStatus('Camera access denied or not available.', 'error');
+        }
+      }
+
+      async detectWebcamFrame() {
+        if (!this.isDetecting) return;
+
+        const startTime = performance.now();
+        
+        this.canvas.width = this.video.videoWidth;
+        this.canvas.height = this.video.videoHeight;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        try {
+          const predictions = await this.model.detect(this.video);
+          this.drawPredictions(predictions, this.ctx);
+          this.updateDetectionStats(predictions, performance.now() - startTime);
+        } catch (error) {
+          console.error('Detection error:', error);
+        }
+
+        if (this.isDetecting) {
+          requestAnimationFrame(() => this.detectWebcamFrame());
+        }
+      }
+
+      async handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        this.showStatus('Processing uploaded image...', 'info');
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          this.uploadedImage.src = e.target.result;
+          this.uploadedImage.onload = async () => {
+            document.getElementById('uploadContainer').classList.remove('hidden');
+            document.getElementById('cameraContainer').classList.add('hidden');
+            this.stopWebcam();
+
+            const startTime = performance.now();
+            this.uploadCanvas.width = this.uploadedImage.naturalWidth;
+            this.uploadCanvas.height = this.uploadedImage.naturalHeight;
+            this.uploadCtx.clearRect(0, 0, this.uploadCanvas.width, this.uploadCanvas.height);
+
+            try {
+              const predictions = await this.model.detect(this.uploadedImage);
+              this.drawPredictions(predictions, this.uploadCtx);
+              this.updateDetectionStats(predictions, performance.now() - startTime);
+              this.showStatus(`Detected ${predictions.length} objects!`, 'success');
+              setTimeout(() => this.hideStatus(), 3000);
+            } catch (error) {
+              this.showStatus('Error processing image.', 'error');
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+
+      drawPredictions(predictions, context) {
+        context.font = '16px Inter';
+        context.textBaseline = 'top';
+
+        predictions.forEach((pred, index) => {
+          const [x, y, width, height] = pred.bbox;
+          const confidence = Math.round(pred.score * 100);
+          
+          // Enhanced bounding box with gradient
+          const gradient = context.createLinearGradient(x, y, x + width, y + height);
+          gradient.addColorStop(0, '#6366f1');
+          gradient.addColorStop(1, '#10b981');
+          
+          // Draw bounding box
+          context.strokeStyle = gradient;
+          context.lineWidth = 3;
+          context.strokeRect(x, y, width, height);
+          
+          // Draw label background
+          const text = `${pred.class} ${confidence}%`;
+          const textWidth = context.measureText(text).width;
+          const textHeight = 20;
+          
+          context.fillStyle = 'rgba(99, 102, 241, 0.9)';
+          context.fillRect(x, y - textHeight - 4, textWidth + 10, textHeight + 4);
+          
+          // Draw label text
+          context.fillStyle = 'white';
+          context.fillText(text, x + 5, y - textHeight);
+        });
+      }
+
+      updateDetectionStats(predictions, processingTime) {
+        const totalConfidence = predictions.reduce((sum, pred) => sum + pred.score, 0);
+        const avgConfidence = predictions.length > 0 ? (totalConfidence / predictions.length * 100) : 0;
+
+        this.detectionStats = {
+          objectCount: predictions.length,
+          avgConfidence: Math.round(avgConfidence),
+          processingTime: Math.round(processingTime)
+        };
+
+        // Update UI
+        document.getElementById('objectCount').textContent = this.detectionStats.objectCount;
+        document.getElementById('avgConfidence').textContent = `${this.detectionStats.avgConfidence}%`;
+        document.getElementById('processingTime').textContent = `${this.detectionStats.processingTime}ms`;
+
+        // Show detected objects list
+        const objectsList = document.getElementById('detectedObjects');
+        if (predictions.length > 0) {
+          const uniqueObjects = [...new Set(predictions.map(p => p.class))];
+          objectsList.innerHTML = `<strong>Objects:</strong> ${uniqueObjects.join(', ')}`;
+          document.getElementById('detectionInfo').classList.add('show');
+        } else {
+          document.getElementById('detectionInfo').classList.remove('show');
+        }
+      }
+
+      stopWebcam() {
+        this.isDetecting = false;
+        if (this.stream) {
+          this.stream.getTracks().forEach(track => track.stop());
+          this.stream = null;
+        }
+      }
+
+      clearAll() {
+        this.stopWebcam();
+        
+        // Clear canvases
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.uploadCtx.clearRect(0, 0, this.uploadCanvas.width, this.uploadCanvas.height);
+        
+        // Reset UI
+        this.uploadedImage.src = '';
+        document.getElementById('cameraContainer').classList.add('hidden');
+        document.getElementById('uploadContainer').classList.add('hidden');
+        document.getElementById('detectionInfo').classList.remove('show');
+        document.getElementById('imageUpload').value = '';
+        
+        this.showStatus('Everything cleared!', 'info');
+        setTimeout(() => this.hideStatus(), 2000);
+      }
+    }
+
+    // Global functions for backward compatibility
+    let detector;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      detector = new ObjectDetector();
     });
 
-    // Draw bounding boxes
-    function drawPredictions(predictions, context) {
-      predictions.forEach(pred => {
-        context.beginPath();
-        context.rect(...pred.bbox);
-        context.lineWidth = 2;
-        context.strokeStyle = "lime";
-        context.fillStyle = "lime";
-        context.stroke();
-        context.fillText(pred.class + " (" + Math.round(pred.score * 100) + "%)", pred.bbox[0], pred.bbox[1] > 10 ? pred.bbox[1] - 5 : 10);
-      });
+    function startWebcam() {
+      detector.startWebcam();
     }
 
-    // Clear Canvas
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      uploadCtx.clearRect(0, 0, uploadCanvas.width, uploadCanvas.height);
-      uploadedImage.src = "";
-      if (stream) {
-        let tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-      }
-      document.getElementById('cameraContainer').classList.add('d-none');
-      document.getElementById('uploadContainer').classList.add('d-none');
-      document.getElementById('imageUpload').value = "";
+    function clearAll() {
+      detector.clearAll();
     }
   </script>
 </body>
