@@ -500,10 +500,10 @@
       <a href="index.html" class="logo">Eric Kumi</a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="projects.html">Projects</a></li>
+        <li><a href="index.html">About</a></li>
+        <li><a href="all-projects.html">Projects</a></li>
         <li><a href="#" class="active">AI Detection</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -541,10 +541,10 @@
         </button>
         
         <div class="file-input-wrapper">
-          <button class="btn btn-success">
+          <button class="btn btn-success" onclick="document.getElementById('imageUpload').click()">
             <i class="fas fa-upload"></i> Upload Image
           </button>
-          <input type="file" id="imageUpload" class="file-input" accept="image/*">
+          <input type="file" id="imageUpload" class="file-input" accept="image/*" style="display: none;">
         </div>
         
         <button class="btn btn-danger" onclick="clearAll()">
